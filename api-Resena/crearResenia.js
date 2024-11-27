@@ -1,109 +1,76 @@
-const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB.DocumentClient();
-const lambda = new AWS.Lambda();
-//const { DateTime } = require('luxon');
+import boto3
+import hashlib
+import json
+import os  # Para acceder a las variables de entorno
 
-const { randomUUID } = require('crypto');
-//const uuid = require('uuid'); // Asegúrate de tener esta librería instalada
+# Hashear contraseña
+def hash_password(password):
+    # Retorna la contraseña hasheada
+    return hashlib.sha256(password.encode()).hexdigest()
 
-const REVIEWS_TABLE = process.env.REVIEWS_TABLE;
-if (!REVIEWS_TABLE) {
-    throw new Error("La variable de entorno REVIEWS_TABLE no está configurada.");
-}
+# Función que maneja el registro de user y validación del password
+def lambda_handler(event, context):
+    try:
+        # Esto maneja el caso donde no haya un cuerpo válido
+        # Obtener el email y el password
+        body = json.loads(event.get('body', '{}'))
+        user_id = body.get('user_id')
+        password = body.get('password')
 
-exports.handler = async (event) => {
-
-    console.log("Contenido de event.body:", event.body);
-
-    //const data = JSON.parse(event.body);
-    let data;
-    try {
-        data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-    } catch (error) {
-        console.error("Error al parsear event.body:", error);
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Body no es un JSON válido" })
-        };
-    }
-
-    
-    // Inicio - Proteger el Lambda
-    const token = event.headers.Authorization;
-    
-    const payload = JSON.stringify({ token: token });
-    
-    try {
-        const invokeResponse = await lambda.invoke({
-            FunctionName: "ValidarTokenAcceso", 
-            InvocationType: 'RequestResponse',
-            Payload: payload
-        }).promise();
         
-        const response = JSON.parse(invokeResponse.Payload);
-        console.log(response);
-        
-        if (response.statusCode === 403) {
+
+        print(f"Received user_id: {user_id}, password: {password}")
+
+
+        # Verificar que el email y el password existen
+        if user_id and password:
+            # Hashea la contraseña antes de almacenarla
+            hashed_password = hash_password(password)
+
+            print(f"Hashed password: {hashed_password}")
+            
+
+
+            # Conectar DynamoDB
+            dynamodb = boto3.resource('dynamodb')
+            table_name = os.environ['tabla_usuarios']
+            t_usuarios = dynamodb.Table(table_name)
+            # Almacena los datos del user en la tabla de usuarios en DynamoDB
+            response = t_usuarios.put_item(
+                Item={
+                    'user_id': user_id,
+                    'password': hashed_password,
+                }
+            )
+
+
+            print(f"Put item response: {response}")  
+
+            # Retornar un código de estado HTTP 200 (OK) y un mensaje de éxito
+            mensaje = {
+                'message': 'User registered successfully',
+                'user_id': user_id
+            }
             return {
-                statusCode: 403,
-                body: JSON.stringify({
-                    status: 'Forbidden - Acceso No Autorizado'
-                })
-            };
+                'statusCode': 200,
+                'body': json.dumps(mensaje)
+            }
+        else:
+            mensaje = {
+                'error': 'Invalid request body: missing user_id or password'
+            }
+            return {
+                'statusCode': 400,
+                'body': json.dumps(mensaje)
+            }
+
+    except Exception as e:
+        # Excepción y retornar un código de error HTTP 500
+        print("Exception:", str(e))
+        mensaje = {
+            'error': str(e)
+        }        
+        return {
+            'statusCode': 500,
+            'body': json.dumps(mensaje)
         }
-
-        // Aquí se obtiene el user_id de la respuesta de ValidarTokenAcceso
-        const user_id = response.user_id; 
-
-
-    } catch (error) {
-        console.error("Error invocando la función Lambda: ", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({
-                status: 'Internal Server Error',
-                message: 'Hubo un problema al validar el token'
-            })
-        };
-    }
-    // Fin - Proteger el Lambda 
-
-
-    // Proceso - Guardar el producto en DynamoDB
-    
-    try {
-        
-
-
-        // Procesar la solicitud de la reseña
-        const item = {
-            id_usuario: user_id,
-            id_resenia: randomUUID(),
-            id_vuelo: data.id_vuelo, //falta validar el id_vuelo
-            calificacion: data.calificacion,
-            comentario: data.comentario,
-            fecha_resena: data.fecha_resena
-        };
-
-        // Guardar la reseña en DynamoDB
-        await dynamodb.put({
-            TableName: REVIEWS_TABLE,
-            Item: item
-        }).promise();
-
-        return {
-            statusCode: 201,
-            body: JSON.stringify({ 
-                message: 'Reseña creada con éxito',
-                id_resenia: item.id_resenia
-             })
-        };
-    } catch (error) {
-        console.error(error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: 'Ocurrió un error al crear la reseña' })
-        };
-    }
-};
-
