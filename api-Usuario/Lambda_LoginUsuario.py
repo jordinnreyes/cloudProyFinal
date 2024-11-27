@@ -3,6 +3,9 @@ import hashlib
 import uuid # Genera valores únicos
 from datetime import datetime, timedelta
 
+import os  # Para acceder a las variables de entorno
+import json  # Para manejar el cuerpo de la respuesta en JSON
+
 # Hashear contraseña
 def hash_password(password):
     # Retorna la contraseña hasheada
@@ -15,9 +18,10 @@ def lambda_handler(event, context):
     hashed_password = hash_password(password)
     # Proceso
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('tabla_usuarios')
+    users_table_name = os.environ['tabla_usuarios']
+    t_usuarios = dynamodb.Table(users_table_name)
 
-    response = table.get_item(
+    response = t_usuarios.get_item(
         Key={
             'user_id': user_id
         }
@@ -25,7 +29,7 @@ def lambda_handler(event, context):
     if 'Item' not in response:
         return {
             'statusCode': 403,
-            'body': 'Usuario no existe'
+            'body': json.dumps({'error': 'User does not exist'})
         }
     else:
         hashed_password_bd = response['Item']['password']
@@ -35,13 +39,20 @@ def lambda_handler(event, context):
             # Genera token
             token = str(uuid.uuid4())
             fecha_hora_exp = datetime.now() + timedelta(minutes=60)
+
+            tokens_table_name = os.environ['t_tokens_acceso']
+            t_tokens_acceso = dynamodb.Table(tokens_table_name)
+
             registro = {
                 'token': token,
                 'expires': fecha_hora_exp.strftime('%Y-%m-%d %H:%M:%S'),
                 'user_id': user_id  # Agregar user_id al registro del token
             }
-            table = dynamodb.Table('t_tokens_acceso')
-            dynamodbResponse = table.put_item(Item = registro)
+            
+            t_tokens_acceso.put_item(Item=registro)
+
+        
+
         else:
             return {
                 'statusCode': 403,
@@ -51,5 +62,5 @@ def lambda_handler(event, context):
     # Salida (json)
     return {
         'statusCode': 200,
-        'token': token
+        'token': json.dumps({'token': token})
     }
