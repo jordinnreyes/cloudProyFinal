@@ -53,7 +53,7 @@ functions:
           method: post
           cors: true
     environment:
-      t_tokens_acceso: "mi_tabla_tokens"  # Definir la tabla de DynamoDB aquí
+      t_tokens_acceso: ${self:custom.tokensTableName}   # Definir la tabla de DynamoDB aquí
 
 resources:
   Resources:
