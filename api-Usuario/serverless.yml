@@ -79,7 +79,7 @@ resources:
 
   Outputs:
     ValidarTokenLambdaARN:
-      Value: { "Fn::GetAtt": ["servicio-vuelos-dev-validarToken", "Arn"] }
+      Value: { "Fn::GetAtt": ["ValidarTokenLambdaFunction", "Arn"] }
       Export:
         Name: ValidarTokenLambdaARN
 
