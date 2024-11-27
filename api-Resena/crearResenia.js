@@ -7,6 +7,9 @@ const { randomUUID } = require('crypto');
 //const uuid = require('uuid'); // Asegúrate de tener esta librería instalada
 
 const REVIEWS_TABLE = process.env.REVIEWS_TABLE;
+if (!REVIEWS_TABLE) {
+    throw new Error("La variable de entorno REVIEWS_TABLE no está configurada.");
+}
 
 exports.handler = async (event) => {
     console.log(event);
