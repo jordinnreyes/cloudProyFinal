@@ -1,6 +1,6 @@
 import boto3
 import hashlib
-
+import json
 import os  # Para acceder a las variables de entorno
 
 # Hashear contraseña
@@ -15,21 +15,34 @@ def lambda_handler(event, context):
         user_id = event.get('user_id')
         password = event.get('password')
         
+
+        print(f"Received user_id: {user_id}, password: {password}")
+
+
         # Verificar que el email y el password existen
         if user_id and password:
             # Hashea la contraseña antes de almacenarla
             hashed_password = hash_password(password)
+
+            print(f"Hashed password: {hashed_password}")
+            
+
+
             # Conectar DynamoDB
             dynamodb = boto3.resource('dynamodb')
             table_name = os.environ['tabla_usuarios']
             t_usuarios = dynamodb.Table(table_name)
             # Almacena los datos del user en la tabla de usuarios en DynamoDB
-            t_usuarios.put_item(
+            response = t_usuarios.put_item(
                 Item={
                     'user_id': user_id,
                     'password': hashed_password,
                 }
             )
+
+
+            print(f"Put item response: {response}")  
+
             # Retornar un código de estado HTTP 200 (OK) y un mensaje de éxito
             mensaje = {
                 'message': 'User registered successfully',
@@ -37,7 +50,7 @@ def lambda_handler(event, context):
             }
             return {
                 'statusCode': 200,
-                'body': mensaje
+                'body': json.dumps(mensaje)
             }
         else:
             mensaje = {
@@ -45,7 +58,7 @@ def lambda_handler(event, context):
             }
             return {
                 'statusCode': 400,
-                'body': mensaje
+                'body': json.dumps(mensaje)
             }
 
     except Exception as e:
@@ -56,5 +69,5 @@ def lambda_handler(event, context):
         }        
         return {
             'statusCode': 500,
-            'body': mensaje
+            'body': json.dumps(mensaje)
         }
