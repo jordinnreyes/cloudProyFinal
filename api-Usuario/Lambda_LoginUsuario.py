@@ -10,11 +10,15 @@ import json  # Para manejar el cuerpo de la respuesta en JSON
 def hash_password(password):
     # Retorna la contraseña hasheada
     return hashlib.sha256(password.encode()).hexdigest()
+    
 
 def lambda_handler(event, context):
     # Entrada (json)
-    user_id = event['user_id']
-    password = event['password']
+    # Esto maneja el caso donde no haya un cuerpo válido
+        # Obtener el email y el password
+    body = json.loads(event.get('body', '{}'))
+    user_id = body.get('user_id')
+    password = body.get('password')
     hashed_password = hash_password(password)
     # Proceso
     dynamodb = boto3.resource('dynamodb')
