@@ -89,7 +89,7 @@ exports.handler = async (event) => {
     // Proceso - Guardar la reseña en DynamoDB
     try {
         const item = {
-            user_id: data.user_id,
+            user_id: user_id,
             id_resenia: randomUUID(),
             id_vuelo: data.id_vuelo, // Faltaría validar el id_vuelo
             calificacion: data.calificacion,
