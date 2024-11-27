@@ -7,8 +7,6 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     REVIEWS_TABLE: ${self:service}-${self:provider.stage}-resenas
-    VALIDAR_TOKEN_ARN:
-      Fn::ImportValue: ValidarTokenLambdaARN
   iam:
     role: arn:aws:iam::078729045663:role/LabRole
 
@@ -45,6 +43,13 @@ functions:
           method: delete
           cors: true
 
+  validarToken:
+    handler: Lambda_ValidarTokenAcceso.lambda_handler
+    events:
+      - http:
+          path: /usuarios/token/validar
+          method: post
+          cors: true
 
 resources:
   Resources:
