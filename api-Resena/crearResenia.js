@@ -31,7 +31,7 @@ exports.handler = async (event) => {
     
     // Invocar el Lambda de Python para validar el token
     const validationResponse = await lambda.invoke({
-        FunctionName: 'Lambda_ValidarTokenAcceso', // Nombre del Lambda Python
+        FunctionName: 'servicio-vuelos-r-dev-validarToken', // Nombre del Lambda Python
         Payload: JSON.stringify({ token }), // Pasa el token en el evento
     }).promise();
 
