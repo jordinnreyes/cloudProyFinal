@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const lambda = new AWS.Lambda();
+//const { DateTime } = require('luxon');
 
 const { randomUUID } = require('crypto');
 //const uuid = require('uuid'); // Asegúrate de tener esta librería instalada
@@ -11,8 +12,21 @@ if (!REVIEWS_TABLE) {
 }
 
 exports.handler = async (event) => {
-    console.log(event);
-    const data = JSON.parse(event.body);
+
+    console.log("Contenido de event.body:", event.body);
+
+    //const data = JSON.parse(event.body);
+    let data;
+    try {
+        data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+    } catch (error) {
+        console.error("Error al parsear event.body:", error);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Body no es un JSON válido" })
+        };
+    }
+
     
     // Inicio - Proteger el Lambda
     const token = event.headers.Authorization;
