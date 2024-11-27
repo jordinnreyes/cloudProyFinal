@@ -78,11 +78,11 @@ resources:
         BillingMode: PAY_PER_REQUEST
 
   Outputs:
-  ValidarTokenLambdaARN:
-    Value:
-      Fn::GetAtt: 
-        - servicio-vuelos-dev-validarToken
-        - Arn
-    Export:
-      Name: ValidarTokenLambdaARN
+    ValidarTokenLambdaARN:
+      Value:
+        Fn::GetAtt: 
+          - servicio-vuelos-dev-validarToken
+          - Arn
+      Export:
+        Name: ValidarTokenLambdaARN
 
