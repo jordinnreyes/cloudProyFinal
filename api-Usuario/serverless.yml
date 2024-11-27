@@ -45,27 +45,14 @@ resources:
         AttributeDefinitions:
           - AttributeName: user_id 
             AttributeType: S
-          - AttributeName: apellido
-            AttributeType: S   # Usado para el LSI
           - AttributeName: nombre
             AttributeType: S   # Usado para el GSI
+          - AttributeName: apellido
+            AttributeType: S   # Usado para el GSI (no clave principal, pero parte del GSI)
         KeySchema:
           - AttributeName: user_id 
             KeyType: HASH
-          - AttributeName: apellido  # Ahora se incluye como Sort Key
-            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-
-        # Índice Secundario Local (LSI)
-        LocalSecondaryIndexes:
-          - IndexName: UsuarioApellidoIndex
-            KeySchema:
-              - AttributeName: user_id
-                KeyType: HASH
-              - AttributeName: apellido
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
 
         # Índice Secundario Global (GSI)
         GlobalSecondaryIndexes:
