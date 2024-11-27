@@ -1,7 +1,6 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const lambda = new AWS.Lambda();
-const { DateTime } = require('luxon');
 
 const { randomUUID } = require('crypto');
 //const uuid = require('uuid'); // Asegúrate de tener esta librería instalada
