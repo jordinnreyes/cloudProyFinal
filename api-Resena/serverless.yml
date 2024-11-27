@@ -8,7 +8,7 @@ provider:
   environment:
     REVIEWS_TABLE: ${self:service}-${self:provider.stage}-resenas
   iam:
-    role: arn:aws:iam::498917627164:role/LabRole
+    role: arn:aws:iam::078729045663:role/LabRole
 
 functions:
   crearResenia:
