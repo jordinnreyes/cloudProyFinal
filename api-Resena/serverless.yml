@@ -7,7 +7,7 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     REVIEWS_TABLE: ${self:service}-${self:provider.stage}-resenas
-    TOKENS_TABLE: ${self:service}-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
+    TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
   iam:
     role: arn:aws:iam::078729045663:role/LabRole
 
