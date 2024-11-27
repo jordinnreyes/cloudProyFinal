@@ -45,7 +45,7 @@ exports.handler = async (event) => {
     try {
         validationResponse = await lambda.invoke({
             FunctionName: 'servicio-vuelos-r-dev-validarToken', // Nombre del Lambda Python
-            Payload: JSON.stringify({ token }), // Pasa el token en el evento
+            Payload: JSON.stringify({ token: token }), // Pasa el token en el evento
         }).promise();
     } catch (error) {
         console.error("Error al invocar la función Lambda de validación:", error);
