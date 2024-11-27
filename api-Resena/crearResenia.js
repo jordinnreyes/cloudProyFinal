@@ -62,7 +62,8 @@ exports.handler = async (event) => {
 
     let parsedResponse;
     try {
-        parsedResponse = JSON.parse(validationResponse.Payload);
+        parsedResponse = JSON.parse(validationResponse.Payload); // Parsea el Payload principal
+        parsedResponse.body = JSON.parse(parsedResponse.body);  // Parsea el body interno
     } catch (error) {
         console.error("Error al parsear la respuesta de validación:", error);
         return {
