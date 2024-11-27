@@ -5,7 +5,11 @@ import os
 
 def lambda_handler(event, context):
     # Obtener el token de la solicitud
-    token = event.get('token')
+    # Obtener el cuerpo de la solicitud y parsearlo como JSON
+    body = json.loads(event.get('body', '{}'))  # Esto maneja el caso donde no haya un cuerpo válido
+
+    # Obtener el token de la solicitud
+    token = body.get('token')
     if not token:
         return {
             'statusCode': 400,
