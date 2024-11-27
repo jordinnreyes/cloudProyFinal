@@ -70,16 +70,7 @@ def lambda_handler(event, context):
             })
         }
 
-    # Validar que el user_id proporcionado en la solicitud coincida con el user_id asociado al token
-    user_id_request = body.get('user_id')  # Cambié de event.get a body.get
-    if user_id_request != user_id:
-        return {
-            'statusCode': 403,
-            'body': json.dumps({
-                'message': 'El token no corresponde al usuario logueado'
-            })
-        }
-
+  
     # Si todo es válido, devolver el user_id y un mensaje de éxito
     return {
         'statusCode': 200,
