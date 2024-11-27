@@ -1,0 +1,96 @@
+service: servicio-vuelos
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    REVIEWS_TABLE: ${self:service}-${self:provider.stage}-resenas
+  iam:
+    role: arn:aws:iam::498917627164:role/LabRole
+
+functions:
+  crearResenia:
+    handler: crearResenia.handler
+    events:
+      - http:
+          path: /reviews
+          method: post
+          cors: true
+          integration: lambda
+  obtenerResenia:
+    handler: obtenerResenia.handler
+    events:
+      - http:
+          path: /reviewsGet
+          method: get
+          cors: true
+
+  modificarResenia:
+    handler: modificarResenia.handler
+    events:
+      - http:
+          path: /reviews
+          method: put
+          cors: true
+
+  eliminarResenia:
+    handler: eliminarResenia.handler
+    events:
+      - http:
+          path: /reviews
+          method: delete
+          cors: true
+
+
+resources:
+  Resources:
+    ReviewsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REVIEWS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_usuario
+            AttributeType: S
+          - AttributeName: id_resenia
+            AttributeType: S
+          - AttributeName: calificacion
+            AttributeType: N  # Usado para el LSI
+          - AttributeName: id_vuelo
+            AttributeType: S  # Usado para el GSI
+        KeySchema:
+          - AttributeName: id_usuario
+            KeyType: HASH
+          - AttributeName: id_resenia
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+        # Índice Secundario Local (LSI)
+        LocalSecondaryIndexes:
+          - IndexName: CalificacionIndex
+            KeySchema:
+              - AttributeName: id_usuario
+                KeyType: HASH
+              - AttributeName: calificacion
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        # Índice Secundario Globales (GSI)
+        GlobalSecondaryIndexes:
+          - IndexName: VueloIndex2
+            KeySchema:
+              - AttributeName: id_vuelo
+                KeyType: HASH
+              - AttributeName: id_resenia
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: VueloIndex
+            KeySchema:
+              - AttributeName: id_vuelo
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
