@@ -1,6 +1,8 @@
 import boto3
 from datetime import datetime
 
+import os  # Para acceder a las variables de entorno
+
 def lambda_handler(event, context):
     # Entrada (json)
     token = event['token']
@@ -8,7 +10,9 @@ def lambda_handler(event, context):
     user_id_request = event.get('user_id')  
     # Proceso
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('t_tokens_acceso')
+    table_name = os.environ['t_tokens_acceso']  # Usa la variable de entorno
+    table = dynamodb.Table(table_name)
+
     response = table.get_item(
         Key={
             'token': token
