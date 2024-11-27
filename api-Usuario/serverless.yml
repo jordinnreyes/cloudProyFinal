@@ -80,6 +80,6 @@ resources:
 outputs:
   ValidarTokenLambdaARN:
     Value:
-      Fn::GetAtt: [ValidarToken, Arn]
+      Fn::GetAtt: [validarToken, Arn]
     Export:
       Name: ValidarTokenLambdaARN
