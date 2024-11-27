@@ -1,16 +1,14 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
-// const lambda = new AWS.Lambda(); // Eliminar, ya no es necesario
-// const { DateTime } = require('luxon'); // Si no lo necesitas, elimínalo
 const { randomUUID } = require('crypto');
+
+// Crea una instancia del cliente Lambda
+const lambda = new AWS.Lambda();
 
 const REVIEWS_TABLE = process.env.REVIEWS_TABLE;
 if (!REVIEWS_TABLE) {
     throw new Error("La variable de entorno REVIEWS_TABLE no está configurada.");
 }
-
-// Incluir la función de validación de token directamente aquí
-const validarTokenAcceso = require('./Lambda_ValidarTokenAcceso'); // Ruta al archivo de la función
 
 exports.handler = async (event) => {
 
@@ -31,15 +29,25 @@ exports.handler = async (event) => {
     // Inicio - Proteger el Lambda con la validación del token
     const token = event.headers.Authorization;
     
-    // Usar la función `validarTokenAcceso` directamente
-    const validationResponse = await validarTokenAcceso({ token });
+    // Invocar el Lambda de Python para validar el token
+    const validationResponse = await lambda.invoke({
+        FunctionName: 'Lambda_ValidarTokenAcceso', // Nombre del Lambda Python
+        Payload: JSON.stringify({ token }), // Pasa el token en el evento
+    }).promise();
+
+    const parsedResponse = JSON.parse(validationResponse.Payload);
     
-    if (validationResponse.statusCode !== 200) {
-        return validationResponse; // Devuelve el error directamente
+    if (parsedResponse.statusCode !== 200) {
+        return {
+            statusCode: parsedResponse.statusCode,
+            body: JSON.stringify({
+                message: parsedResponse.body.message || 'Token inválido o error en la validación'
+            })
+        };
     }
 
     // Aquí obtenemos el `user_id` de la respuesta de `validarTokenAcceso`
-    const user_id = validationResponse.body.user_id; 
+    const user_id = parsedResponse.body.user_id;
     if (!user_id) {
         return {
             statusCode: 403,
