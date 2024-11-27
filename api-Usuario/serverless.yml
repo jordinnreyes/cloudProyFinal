@@ -9,7 +9,7 @@ provider:
     tabla_usuarios: ${self:service}-${self:provider.stage}-usuario
     t_tokens_acceso: ${self:service}-${self:provider.stage}-tokens
   iam:
-    role: arn:aws:iam::498917627164:role/LabRole
+    role: arn:aws:iam::078729045663:role/LabRole
 
 functions:
   crearUsuario:
