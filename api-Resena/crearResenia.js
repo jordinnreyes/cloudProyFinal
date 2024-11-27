@@ -30,24 +30,44 @@ exports.handler = async (event) => {
     const token = event.headers.Authorization;
     
     // Invocar el Lambda de Python para validar el token
-    const validationResponse = await lambda.invoke({
-        FunctionName: 'servicio-vuelos-r-dev-validarToken', // Nombre del Lambda Python
-        Payload: JSON.stringify({ token }), // Pasa el token en el evento
-    }).promise();
-
-    const parsedResponse = JSON.parse(validationResponse.Payload);
-    
-    if (parsedResponse.statusCode !== 200) {
+    let validationResponse;
+    try {
+        validationResponse = await lambda.invoke({
+            FunctionName: 'servicio-vuelos-r-dev-validarToken', // Nombre del Lambda Python
+            Payload: JSON.stringify({ token }), // Pasa el token en el evento
+        }).promise();
+    } catch (error) {
+        console.error("Error al invocar la función Lambda de validación:", error);
         return {
-            statusCode: parsedResponse.statusCode,
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error al invocar la validación de token" })
+        };
+    }
+
+    let parsedResponse;
+    try {
+        parsedResponse = JSON.parse(validationResponse.Payload);
+    } catch (error) {
+        console.error("Error al parsear la respuesta de validación:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error al procesar la respuesta de validación" })
+        };
+    }
+
+    // Verificar si la respuesta contiene el código de estado esperado
+    if (!parsedResponse || parsedResponse.statusCode !== 200) {
+        const message = parsedResponse?.body?.message || 'Token inválido o error en la validación';
+        return {
+            statusCode: parsedResponse?.statusCode || 400,
             body: JSON.stringify({
-                message: parsedResponse.body.message || 'Token inválido o error en la validación'
+                message: message
             })
         };
     }
 
     // Aquí obtenemos el `user_id` de la respuesta de `validarTokenAcceso`
-    const user_id = parsedResponse.body.user_id;
+    const user_id = parsedResponse.body?.user_id;
     if (!user_id) {
         return {
             statusCode: 403,
@@ -84,7 +104,7 @@ exports.handler = async (event) => {
              })
         };
     } catch (error) {
-        console.error(error);
+        console.error("Error al guardar la reseña en DynamoDB:", error);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: 'Ocurrió un error al crear la reseña' })
