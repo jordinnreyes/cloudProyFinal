@@ -1,4 +1,4 @@
-service: servicio-vuelos
+service: servicio-vuelos-r
 
 provider:
   name: aws
