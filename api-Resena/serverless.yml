@@ -45,6 +45,7 @@ functions:
 
   validarToken:
     handler: Lambda_ValidarTokenAcceso.lambda_handler
+    runtime: python3.9
     events:
       - http:
           path: /usuarios/token/validar
