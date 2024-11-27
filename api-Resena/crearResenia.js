@@ -1,21 +1,22 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
-const lambda = new AWS.Lambda();
-//const { DateTime } = require('luxon');
-
+// const lambda = new AWS.Lambda(); // Eliminar, ya no es necesario
+// const { DateTime } = require('luxon'); // Si no lo necesitas, elimínalo
 const { randomUUID } = require('crypto');
-//const uuid = require('uuid'); // Asegúrate de tener esta librería instalada
 
 const REVIEWS_TABLE = process.env.REVIEWS_TABLE;
 if (!REVIEWS_TABLE) {
     throw new Error("La variable de entorno REVIEWS_TABLE no está configurada.");
 }
 
+// Incluir la función de validación de token directamente aquí
+const validarTokenAcceso = require('./Lambda_ValidarTokenAcceso'); // Ruta al archivo de la función
+
 exports.handler = async (event) => {
 
     console.log("Contenido de event.body:", event.body);
 
-    //const data = JSON.parse(event.body);
+    // Intentamos parsear el cuerpo de la solicitud
     let data;
     try {
         data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
@@ -27,66 +28,35 @@ exports.handler = async (event) => {
         };
     }
 
-    
-    // Inicio - Proteger el Lambda
+    // Inicio - Proteger el Lambda con la validación del token
     const token = event.headers.Authorization;
     
-    const payload = JSON.stringify({ token: token });
+    // Usar la función `validarTokenAcceso` directamente
+    const validationResponse = await validarTokenAcceso({ token });
     
-    try {
-        const invokeResponse = await lambda.invoke({
-            FunctionName: process.env.VALIDAR_TOKEN_ARN, 
-            Payload: JSON.stringify({ token })
-        }).promise();
-        
-        const response = JSON.parse(invokeResponse.Payload);
-        console.log(response);
-        
-        if (response.statusCode === 403) {
-            return {
-                statusCode: 403,
-                body: JSON.stringify({
-                    status: 'Forbidden - Acceso No Autorizado'
-                })
-            };
-        }
+    if (validationResponse.statusCode !== 200) {
+        return validationResponse; // Devuelve el error directamente
+    }
 
-        // Aquí se obtiene el user_id de la respuesta de ValidarTokenAcceso
-        const user_id = response.user_id; 
-        if (!user_id) {
-            return {
-                statusCode: 403,
-                body: JSON.stringify({
-                    status: 'Token inválido o usuario no autorizado'
-                })
-            };
-        }
-
-
-    } catch (error) {
-        console.error("Error invocando la función Lambda: ", error);
+    // Aquí obtenemos el `user_id` de la respuesta de `validarTokenAcceso`
+    const user_id = validationResponse.body.user_id; 
+    if (!user_id) {
         return {
-            statusCode: 500,
+            statusCode: 403,
             body: JSON.stringify({
-                status: 'Internal Server Error',
-                message: 'Hubo un problema al validar el token'
+                status: 'Token inválido o usuario no autorizado'
             })
         };
     }
-    // Fin - Proteger el Lambda 
 
+    // Fin - Proteger el Lambda  - El token ha sido validado
 
-    // Proceso - Guardar el producto en DynamoDB
-    
+    // Proceso - Guardar la reseña en DynamoDB
     try {
-        
-
-
-        // Procesar la solicitud de la reseña
         const item = {
             id_usuario: user_id,
             id_resenia: randomUUID(),
-            id_vuelo: data.id_vuelo, //falta validar el id_vuelo
+            id_vuelo: data.id_vuelo, // Faltaría validar el id_vuelo
             calificacion: data.calificacion,
             comentario: data.comentario,
             fecha_resena: data.fecha_resena
@@ -113,4 +83,3 @@ exports.handler = async (event) => {
         };
     }
 };
-
