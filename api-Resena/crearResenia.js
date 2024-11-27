@@ -28,6 +28,8 @@ exports.handler = async (event) => {
 
     // Inicio - Proteger el Lambda con la validación del token
     const token = event.headers.Authorization?.split(' ')[1];
+
+    console.log("Token recibido:", event.headers.Authorization);  
     
     if (!token) {
         return {
