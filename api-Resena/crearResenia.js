@@ -27,7 +27,14 @@ exports.handler = async (event) => {
     }
 
     // Inicio - Proteger el Lambda con la validación del token
-    const token = event.headers.Authorization;
+    const token = event.headers.Authorization?.split(' ')[1];
+    
+    if (!token) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Token no proporcionado" })
+        };
+    }
     
     // Invocar el Lambda de Python para validar el token
     let validationResponse;
