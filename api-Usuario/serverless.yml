@@ -80,6 +80,6 @@ resources:
   Outputs:
     ValidarTokenLambdaARN:
       Value:
-        Fn::GetAtt: [validarToken, Arn]
+        Fn::GetAtt: [${self:service}-${self:provider.stage}-validarToken, Arn]
       Export:
         Name: ValidarTokenLambdaARN
