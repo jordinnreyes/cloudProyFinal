@@ -62,7 +62,7 @@ resources:
       Properties:
         TableName: ${self:provider.environment.REVIEWS_TABLE}
         AttributeDefinitions:
-          - AttributeName: id_usuario
+          - AttributeName: user_id
             AttributeType: S
           - AttributeName: id_resenia
             AttributeType: S
@@ -71,7 +71,7 @@ resources:
           - AttributeName: id_vuelo
             AttributeType: S  # Usado para el GSI
         KeySchema:
-          - AttributeName: id_usuario
+          - AttributeName: user_id
             KeyType: HASH
           - AttributeName: id_resenia
             KeyType: RANGE
@@ -81,7 +81,7 @@ resources:
         LocalSecondaryIndexes:
           - IndexName: CalificacionIndex
             KeySchema:
-              - AttributeName: id_usuario
+              - AttributeName: user_id
                 KeyType: HASH
               - AttributeName: calificacion
                 KeyType: RANGE
