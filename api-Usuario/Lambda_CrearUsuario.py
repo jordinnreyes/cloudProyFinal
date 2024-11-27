@@ -1,6 +1,8 @@
 import boto3
 import hashlib
 
+import os  # Para acceder a las variables de entorno
+
 # Hashear contraseña
 def hash_password(password):
     # Retorna la contraseña hasheada
@@ -19,7 +21,8 @@ def lambda_handler(event, context):
             hashed_password = hash_password(password)
             # Conectar DynamoDB
             dynamodb = boto3.resource('dynamodb')
-            t_usuarios = dynamodb.Table('tabla_usuarios')
+            table_name = os.environ['tabla_usuarios']
+            t_usuarios = dynamodb.Table(table_name)
             # Almacena los datos del user en la tabla de usuarios en DynamoDB
             t_usuarios.put_item(
                 Item={
