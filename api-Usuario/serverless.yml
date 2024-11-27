@@ -77,7 +77,7 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
-outputs:
+Outputs:
   ValidarTokenLambdaARN:
     Value:
       Fn::GetAtt: [validarToken, Arn]
