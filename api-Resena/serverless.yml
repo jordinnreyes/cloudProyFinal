@@ -25,7 +25,7 @@ functions:
     events:
       - http:
           path: /reviewsGet
-          method: get
+          method: post
           cors: true
 
   modificarResenia:
