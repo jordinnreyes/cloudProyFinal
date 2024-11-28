@@ -68,21 +68,44 @@ def lambda_handler(event, context):
 
     # Parsear la respuesta de validación
     try:
-        parsed_response = json.loads(validation_response['Payload'].read().decode())
+        response_payload = validation_response['Payload'].read().decode()  # Leer y decodificar
+        logging.info("Respuesta decodificada: %s", response_payload)
+
+        parsed_response = json.loads(response_payload)
+        logging.info("Resultado de validación: %s", parsed_response)
+
+        # Intentamos obtener el cuerpo de la respuesta
         parsed_body = json.loads(parsed_response.get('body', '{}'))
-    except Exception as error:
-        logging.error("Error al parsear la respuesta de validación: %s", error)
+        logging.info("Cuerpo parseado de la respuesta de validación: %s", parsed_body)
+        
+        # Validar si la respuesta contiene un estado exitoso
+        if parsed_response.get('statusCode') != 200:
+            message = parsed_body.get('message', 'Token inválido o error en la validación')
+            return {
+                'statusCode': parsed_response.get('statusCode', 400),
+                'body': json.dumps({'message': message})
+            }
+
+        if parsed_response.get('is_valid', False):
+            logging.info("El token es válido")
+        else:
+            logging.error("El token no es válido")
+            return {
+                'statusCode': 401,
+                'body': json.dumps({'message': 'Token no válido'})
+            }
+
+    except json.JSONDecodeError as e:
+        logging.error("Error al parsear la respuesta de validación: %s", str(e))
         return {
             'statusCode': 500,
             'body': json.dumps({'message': 'Error al procesar la respuesta de validación'})
         }
-
-    # Verificar si la respuesta contiene el código de estado esperado
-    if parsed_response.get('statusCode') != 200:
-        message = parsed_body.get('message', 'Token inválido o error en la validación')
+    except Exception as e:
+        logging.error("Error inesperado al manejar la respuesta: %s", str(e))
         return {
-            'statusCode': parsed_response.get('statusCode', 400),
-            'body': json.dumps({'message': message})
+            'statusCode': 500,
+            'body': json.dumps({'message': 'Error interno del servidor'})
         }
 
 
