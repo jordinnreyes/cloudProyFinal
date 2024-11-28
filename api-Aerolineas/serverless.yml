@@ -12,7 +12,7 @@ provider:
     role: arn:aws:iam::078729045663:role/LabRole
 
 functions:
-  crearCompra:
+  crearAerolineas:
     handler: crearAerolinea.lambda_handler
     events:
       - http:
@@ -24,7 +24,7 @@ functions:
     handler: obtenerAerolineas.lambda_handler
     events:
       - http:
-          path: /aerolineas
+          path: /aerolineasget
           method: post
           cors: true
 
