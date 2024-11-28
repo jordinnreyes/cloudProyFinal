@@ -38,10 +38,23 @@ def lambda_handler(event, context):
             'statusCode': 400,
             'body': json.dumps({'message': 'Error de decodificación JSON'})
         }
-    
+
+
+    print("Headers recibidos:", event['headers'])
      # Inicio - Proteger el Lambda con la validación del token
-    token = event['headers'].get('Authorization', '').split(' ')[1] if 'Authorization' in event['headers'] else None
+    authorization_header = event['headers'].get('Authorization', '')
+    if not authorization_header.startswith('Bearer '):
+        logging.error("Encabezado Authorization ausente o mal formado.")
+        return {
+            'statusCode': 401,
+            'body': json.dumps({'message': 'Token de autorización ausente o mal formado'})
+        }
+
+    token = authorization_header.split(' ')[1]
     logging.info("Token recibido: %s", token)
+    #verifica su valor
+    print("Token extraído:", token)
+
 
     if not token:
         return {
