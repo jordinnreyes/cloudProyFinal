@@ -1,0 +1,108 @@
+service: servicio-vuelos-aero
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    AEROLINEAS_TABLE: ${self:service}-${self:provider.stage}-aerolineas
+    TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
+  iam:
+    role: arn:aws:iam::078729045663:role/LabRole
+
+functions:
+  crearCompra:
+    handler: crearAerolinea.lambda_handler
+    events:
+      - http:
+          path: /aerolineas
+          method: post
+          cors: true
+
+  obtenerAerolineas:
+    handler: obtenerAerolineas.lambda_handler
+    events:
+      - http:
+          path: /aerolineas
+          method: post
+          cors: true
+
+  modificarAerolinea:
+    handler: modificarAerolinea.lambda_handler
+    events:
+      - http:
+          path: /aerolineas
+          method: put
+          cors: true
+
+  eliminarAerolinea:
+    handler: eliminarAerolinea.lambda_handler
+    events:
+      - http:
+          path: /aerolineas
+          method: delete
+          cors: true
+
+  obtenerAerolineaById:
+    handler: obtenerAerolineaById.lambda_handler
+    events:
+      - http:
+          path: /Aerolinea/{tenant_id}
+          method: get
+          cors: true
+
+  validarToken:
+    handler: Lambda_ValidarTokenAcceso.lambda_handler
+    runtime: python3.9
+    events:
+      - http:
+          path: /usuarios/token/validar
+          method: post
+          cors: true
+    environment:
+      t_tokens_acceso: ${self:provider.environment.TOKENS_TABLE}
+
+resources:
+  Resources:
+    ComprasTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.AEROLINEAS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: tenant_id
+            AttributeType: S
+          - AttributeName: codigo
+            AttributeType: S
+          - AttributeName: nombre
+            AttributeType: S   # Usado para el LSI
+          - AttributeName: pais_origen
+            AttributeType: S   # Usado para el GSI
+        KeySchema:
+          - AttributeName: tenant_id
+            KeyType: HASH
+          - AttributeName: codigo
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+        # Índice Secundario Local (LSI)
+        LocalSecondaryIndexes:
+          - IndexName: FechaCompraIndex
+            KeySchema:
+              - AttributeName: tenant_id
+                KeyType: HASH
+              - AttributeName: nombre
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        # Índice Secundario Global (GSI)
+        GlobalSecondaryIndexes:
+          - IndexName: pais_origenIndex
+            KeySchema:
+              - AttributeName: pais_origen
+                KeyType: HASH
+              - AttributeName: codigo
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
