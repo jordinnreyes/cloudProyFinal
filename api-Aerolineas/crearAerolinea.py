@@ -17,16 +17,26 @@ logging.basicConfig(level=logging.INFO)
 def lambda_handler(event, context):
     print(event)
 
-    logging.info("Contenido de event.body: %s", event['body'])
+     # **Inicio de manejo del cuerpo del evento**
+    logging.info("Contenido de event.body: %s", event.get('body', ''))
+     # Bloque 1: Verificar si el cuerpo está vacío y parsearlo
+    body = event.get("body", "")
+    if not body:
+        logging.error("El cuerpo del JSON está vacío")
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'message': 'El cuerpo del JSON está vacío'})
+        }
 
     # Intentamos parsear el cuerpo de la solicitud
     try:
-        data = json.loads(event['body'])
-    except Exception as error:
-        logging.error("Error al parsear event.body: %s", error)
+        data = json.loads(body)
+        logging.info("JSON parseado correctamente: %s", data)
+    except json.JSONDecodeError as e:
+        logging.error("Error de decodificación JSON: %s", str(e))
         return {
             'statusCode': 400,
-            'body': json.dumps({'message': 'Body no es un JSON válido'})
+            'body': json.dumps({'message': 'Error de decodificación JSON'})
         }
     
      # Inicio - Proteger el Lambda con la validación del token
