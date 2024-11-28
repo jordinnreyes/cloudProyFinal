@@ -8,21 +8,31 @@ exports.handler = async (event) => {
     console.log(event);
     
 
-
-    // Proceso - Obtener las reseñas por id_vuelo
-    const data = JSON.parse(event.body);
+    let data;
+    try {
+        data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+    } catch (error) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: "Body no es un JSON válido"
+            })
+        };
+    }
+    
     const id_vuelo = data.id_vuelo;  // El id_vuelo que se desea consultar
+    // Verificar que el id_vuelo sea válido
+    if (!id_vuelo) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: 'El id_vuelo es obligatorio'
+            })
+        };
+    }
 
     try {
-        // Verificar que el id_vuelo sea válido
-        if (!id_vuelo) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({
-                    message: 'El id_vuelo es obligatorio'
-                })
-            };
-        }
+        
 
         
         // Realizar la consulta para obtener las reseñas de un vuelo usando el GSI VueloIndex
@@ -38,12 +48,10 @@ exports.handler = async (event) => {
 
         const result = await dynamodb.query(params).promise();
 
-        if (result.Items.length === 0) {
+        if (!result.Items || result.Items.length === 0) {
             return {
                 statusCode: 404,
-                body: JSON.stringify({
-                    message: 'No se encontraron reseñas para este vuelo'
-                })
+                body: JSON.stringify({ message: 'No se encontraron reseñas para este vuelo' })
             };
         }
 
