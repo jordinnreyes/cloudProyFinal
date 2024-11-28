@@ -69,7 +69,7 @@ def lambda_handler(event, context):
         
         validation_response = lambda_client.invoke(
             FunctionName='servicio-vuelos-aero-dev-validarToken',  # Nombre del Lambda Python
-            Payload=json.dumps({'token': token}) # Pasamos el token en el evento
+            Payload=json.dumps({'body': json.dumps({'token': token})})# Pasamos el token en el evento
         )
 
         response_payload = validation_response['Payload'].read().decode('utf-8')
