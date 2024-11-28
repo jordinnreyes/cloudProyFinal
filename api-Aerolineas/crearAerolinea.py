@@ -75,48 +75,42 @@ def lambda_handler(event, context):
         response_payload = validation_response['Payload'].read().decode('utf-8')
         logging.info("Respuesta del servicio de validación: %s", response_payload)
         print("Respuesta de validación del token: %s", response_payload)
-    except Exception as error:
-        logging.error("Error al invocar la función Lambda de validación: %s", error)
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'message': 'Error al invocar la validación de token'})
-        }
 
-    # Parsear la respuesta de validación
-    try:
-        response_payload = validation_response['Payload'].read().decode()  # Leer y decodificar
-        logging.info("Respuesta decodificada: %s", response_payload)
-
-        parsed_response = json.loads(response_payload)
-        logging.info("Resultado de validación: %s", parsed_response)
-
-        # Intentamos obtener el cuerpo de la respuesta
-        parsed_body = json.loads(parsed_response.get('body', '{}'))
-        logging.info("Cuerpo parseado de la respuesta de validación: %s", parsed_body)
-        
-        # Validar si la respuesta contiene un estado exitoso
+        # Parsear la respuesta principal
+        parsed_response = json.loads(response_payload)  # Convertir a dict
+        logging.info("Respuesta principal parseada: %s", parsed_response)
+    
+        # Parsear el cuerpo anidado (body) si existe
+        parsed_body = json.loads(parsed_response.get('body', '{}'))  # Obtener y parsear el cuerpo
+        logging.info("Cuerpo anidado parseado: %s", parsed_body)
+    
+        # Validar el estado del token
         if parsed_response.get('statusCode') != 200:
             message = parsed_body.get('message', 'Token inválido o error en la validación')
             return {
                 'statusCode': parsed_response.get('statusCode', 400),
                 'body': json.dumps({'message': message})
             }
-
-        if parsed_response.get('is_valid', False):
+    
+        # Validación específica del token
+        if parsed_body.get('message') == "Token válido":
             logging.info("El token es válido")
+            user_id = parsed_body.get('user_id', 'Usuario desconocido')
+            logging.info("Usuario autenticado: %s", user_id)
         else:
             logging.error("El token no es válido")
             return {
                 'statusCode': 401,
                 'body': json.dumps({'message': 'Token no válido'})
             }
-
+    
     except json.JSONDecodeError as e:
         logging.error("Error al parsear la respuesta de validación: %s", str(e))
         return {
             'statusCode': 500,
             'body': json.dumps({'message': 'Error al procesar la respuesta de validación'})
         }
+
     except Exception as e:
         logging.error("Error inesperado al manejar la respuesta: %s", str(e))
         return {
