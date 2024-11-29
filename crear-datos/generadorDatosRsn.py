@@ -139,6 +139,9 @@ def generar_usuarios(cantidad=10000):# Nombre de la tabla desde variable de ento
 
 # Función para generar compras ficticias
 def generar_compras(cantidad=10000, usuarios=[], vuelos=[]):
+    if not usuarios or not vuelos:
+        print("Error: La lista de usuarios o la lista de vuelos está vacía.")
+        return
 
     
     table_compras = dynamodb.Table(compras_table)
@@ -218,6 +221,9 @@ def generar_fecha():
 
 # Crear reseñas en DynamoDB usando los user_id e id_vuelo de las compras
 def crear_resenas(usuarios, vuelos):
+    if not usuarios or not vuelos:
+        print("Error: La lista de usuarios o la lista de vuelos está vacía.")
+        return
     table_resenas = dynamodb.Table(table_name_resenas)
 
     # Generamos reseñas basadas en las compras
