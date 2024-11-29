@@ -1,0 +1,100 @@
+service: servicio-vuelos-destino
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    DESTINOS_TABLE: ${self:service}-${self:provider.stage}-destinos
+    TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
+  iam:
+    role: arn:aws:iam::078729045663:role/LabRole
+
+functions:
+  crearDestino:
+    handler: crearDestino.handler
+    events:
+      - http:
+          path: /destinos
+          method: post
+          cors: true
+          integration: lambda
+
+  obtenerDestinos:
+    handler: obtenerDestinos.handler
+    events:
+      - http:
+          path: /destinosget
+          method: post
+          cors: true
+
+  modificarDestino:
+    handler: modificarDestino.handler
+    events:
+      - http:
+          path: /destinos
+          method: put
+          cors: true
+
+  eliminarDestino:
+    handler: eliminarDestino.handler
+    events:
+      - http:
+          path: /destinos
+          method: delete
+          cors: true
+  validarToken:
+    handler: Lambda_ValidarTokenAcceso.lambda_handler
+    runtime: python3.9
+    events:
+      - http:
+          path: /usuarios/token/validar
+          method: post
+          cors: true
+    environment:
+      t_tokens_acceso: ${self:provider.environment.TOKENS_TABLE}
+
+resources:
+  Resources:
+    DestinosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DESTINOS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_destino
+            AttributeType: S
+          - AttributeName: ciudad
+            AttributeType: S
+          - AttributeName: pais
+            AttributeType: S   # LSI para búsqueda por país
+          - AttributeName: popularidad
+            AttributeType: N   # GSI para ordenar por popularidad
+        KeySchema:
+          - AttributeName: id_destino
+            KeyType: HASH
+          - AttributeName: ciudad
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+        # Índice Secundario Local (LSI)
+        LocalSecondaryIndexes:
+          - IndexName: PaisIndex
+            KeySchema:
+              - AttributeName: id_destino
+                KeyType: HASH
+              - AttributeName: pais
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        # Índice Secundario Global (GSI)
+        GlobalSecondaryIndexes:
+          - IndexName: PopularidadIndex
+            KeySchema:
+              - AttributeName: popularidad
+                KeyType: HASH
+              - AttributeName: ciudad
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
