@@ -128,6 +128,13 @@ def lambda_handler(event, context):
 
 
     # Validar tenant_id en la tabla de aerolíneas
+    codigo = data.get('codigo')
+    if not codigo:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'message': 'El codigo es obligatorio'})
+        }
+
     tenant_id = data.get('tenant_id')
     if not tenant_id:
         return {
@@ -139,7 +146,10 @@ def lambda_handler(event, context):
         # Consultar si el tenant_id existe en la tabla de aerolíneas
         response = dynamodb.get_item(
             TableName=aerolineas_table,
-            Key={'tenant_id': {'S': tenant_id}}
+            Key={
+                'tenant_id': {'S': tenant_id}
+                'codigo': {'S': codigo}
+            }
         )
 
         # Si no se encuentra el tenant_id
@@ -162,7 +172,8 @@ def lambda_handler(event, context):
     # Proceso - Guardar la reseña en DynamoDB
     try:
         item = {
-            'tenant_id': {'S': tenant_id},#  Tenant_id como parte de la clave primaria
+            'tenant_id': {'S': tenant_id},
+            'codigo': {'S': data.get('codigo')},#  Tenant_id como parte de la clave primaria
             'id_vuelo': {'S': data.get('id_vuelo')},  # veulo identificada por 'codigo'
             'origen': {'S': data.get('origen')},
             'destino': {'S': data.get('destino')},
