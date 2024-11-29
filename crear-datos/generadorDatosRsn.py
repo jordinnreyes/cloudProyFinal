@@ -319,7 +319,7 @@ if __name__ == "__main__":
             exit()
         
         print("\nGenerando usuarios ficticios...")
-        usuarios = generar_usuarios(cantidad=10000)  
+        usuarios = generar_usuarios(cantidad=1000)  
 
         if aerolineas:  # Verifica si se crearon aerolíneas
             print("\nGenerando vuelos...")
