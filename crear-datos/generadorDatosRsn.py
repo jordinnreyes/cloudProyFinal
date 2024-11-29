@@ -21,7 +21,7 @@ table_name_aerolineas = "servicio-vuelos-aero-dev-aerolineas"
 table_name_vuelos = "servicio-vuelos-v-dev-vuelos"
 table_name_usuarios = "servicio-vuelos-dev-usuario"
 compras_table = "servicio-vuelos-compras-dev-compras"
-destinos_table = "servicio-vuelos-destino-dev-destinos"
+table_name_destinos = "servicio-vuelos-destino-dev-destinos"
 
 
 #----------------------------GENERAR AEROLINEAS------------------------------------------
@@ -262,6 +262,7 @@ def crear_resenas(usuarios, vuelos):
 
 # Función para generar destinos ficticios
 def generar_destinos(cantidad=5000):
+    
     """
     Genera destinos ficticios y los inserta en DynamoDB.
     """
