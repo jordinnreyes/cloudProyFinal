@@ -147,7 +147,7 @@ def lambda_handler(event, context):
         response = dynamodb.get_item(
             TableName=aerolineas_table,
             Key={
-                'tenant_id': {'S': tenant_id}
+                'tenant_id': {'S': tenant_id},
                 'codigo': {'S': codigo}
             }
         )
