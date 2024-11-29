@@ -18,6 +18,8 @@ def lambda_handler(event, context):
 
      # **Inicio de manejo del cuerpo del evento**
     logging.info("Contenido de event.body: %s", event.get('body', ''))
+    print("Contenido de event.body: %s", event.get('body', ''))
+
      # Bloque 1: Verificar si el cuerpo está vacío y parsearlo
     body = event.get("body", "")
     if not body:
@@ -27,10 +29,12 @@ def lambda_handler(event, context):
             'body': json.dumps({'message': 'El cuerpo del JSON está vacío'})
         }
 
+
     # Intentamos parsear el cuerpo de la solicitud
     try:
         data = json.loads(body)
         logging.info("JSON parseado correctamente: %s", data)
+        print("Datos parseados del cuerpo: ", data)
     except json.JSONDecodeError as e:
         logging.error("Error de decodificación JSON: %s", str(e))
         return {
