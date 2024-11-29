@@ -4,9 +4,11 @@ import uuid
 from datetime import datetime
 import os 
 
+
 # Configuración de DynamoDB
-dynamodb = boto3.client('dynamodb')
-table_name = os.environ['REVIEWS_TABLE']
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+table_name = "servicio-vuelos-r-dev-resenas"
+
  # Cambia esto por el nombre de tu tabla
 
 # Función para generar un comentario aleatorio
@@ -45,21 +47,22 @@ def crear_resenas():
 
         # Crear el item para DynamoDB
         item = {
-            'user_id': {'S': user_id},
-            'id_resenia': {'S': str(uuid.uuid4())},  # ID de reseña único
-            'id_vuelo': {'S': id_vuelo},
-            'calificacion': {'N': str(calificacion)},
-            'comentario': {'S': comentario},
-            'fecha_resena': {'S': fecha_resena}
+            'user_id': user_id,
+            'id_resenia': str(uuid.uuid4()),
+            'id_vuelo': id_vuelo,
+            'calificacion': calificacion,
+            'comentario': comentario,
+            'fecha_resena': fecha_resena
         }
+
 
         # Insertar el item en DynamoDB
         try:
-            response = dynamodb.put_item(
-                TableName=table_name,
-                Item=item
-            )
-            print(f'Reseña agregada: {item["id_resenia"]["S"]}')
+            table = dynamodb.Table(table_name)
+            table.put_item(Item=item)
+
+            print(f'Reseña agregada: {item["id_resenia"]}')
+
         except Exception as e:
             print(f"Error al insertar la reseña: {e}")
 
