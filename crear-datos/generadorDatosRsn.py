@@ -312,14 +312,17 @@ if __name__ == "__main__":
         aerolineas = crear_aerolineas()
         if not aerolineas:  # Verifica si la lista de aerolíneas está vacía
             print("No se crearon aerolíneas. No se pueden generar vuelos.")
-            return
+            exit()
         
         print("\nGenerando usuarios ficticios...")
         usuarios = generar_usuarios(cantidad=10000)  
 
         if aerolineas:  # Verifica si se crearon aerolíneas
             print("\nGenerando vuelos...")
-            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas)  # Genera vuelos solo si hay aerolíneas
+            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas) 
+            if not vuelos:  # Verifica si la lista de aerolíneas está vacía
+                print("No se crearon vuelos. No se pueden generar .")
+                exit()# Genera vuelos solo si hay aerolíneas
 
             if usuarios and vuelos:  # Verifica que haya usuarios y vuelos antes de generar reseñas y compras
                 print("\nGenerando reseñas ficticias...")
