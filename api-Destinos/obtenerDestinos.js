@@ -58,7 +58,7 @@ exports.handler = async (event) => {
             statusCode: 200,
             body: JSON.stringify({
                 message: 'Destinos obtenidos con éxito',
-                destinos: result.Items,
+                destinos: result.Item,
             }),
         };
     } catch (error) {
