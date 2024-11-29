@@ -79,7 +79,8 @@ def crear_vuelos(cantidad=10000, aerolineas=[]):
     
     destinos = ['Lima', 'Nueva York', 'París', 'Bogotá', 'Madrid', 'Buenos Aires', 'Tokio', 'Sídney']
     origenes = ['Lima', 'Miami', 'Los Ángeles', 'Sao Paulo', 'México DF', 'Londres', 'Dubai', 'Toronto']
-    
+
+    vuelos = []
     table_vuelos = dynamodb.Table(table_name_vuelos)
     for _ in range(cantidad):
         aerolinea = random.choice(aerolineas)  # Asociar vuelo a una aerolínea existente
@@ -95,6 +96,7 @@ def crear_vuelos(cantidad=10000, aerolineas=[]):
         }
         try:
             table_vuelos.put_item(Item=item)
+            vuelos.append(item)
             print(f"Vuelo creado: {item['id_vuelo']['S']} para aerolínea {aerolinea['nombre']}")
         except Exception as e:
             print(f"Error al crear vuelo: {e}")
@@ -112,8 +114,9 @@ def hash_password(password):
 def generar_usuarios(cantidad=10000):# Nombre de la tabla desde variable de entorno
     t_usuarios = dynamodb.Table(table_name_usuarios)
 
-    nombres = ['Carlos', 'María', 'Juan', 'Ana', 'Luis', 'Sofía', 'Pedro', 'Camila', 'José', 'Lucía']
+    nombres = ['Carla', 'Mario', 'Juana', 'Anabel', 'Luisa', 'Sofí', 'Pedrita', 'Camilo', 'Josesita', 'Lucio']
     dominios = ['example.com', 'mail.com', 'test.org', 'sample.net']
+    usuarios = []  #
 
     for _ in range(cantidad):
         # Crear datos ficticios para el usuario
@@ -130,6 +133,7 @@ def generar_usuarios(cantidad=10000):# Nombre de la tabla desde variable de ento
                 }
             )
             print(f"Usuario registrado: {user_id} (Contraseña: {password})")
+            usuarios.append(user_id)
         except Exception as e:
             print(f"Error al registrar el usuario {user_id}: {e}")
 
