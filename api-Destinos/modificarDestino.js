@@ -116,7 +116,7 @@ exports.handler = async (event) => {
                 ciudad: ciudad
             },
             UpdateExpression: `SET 
-                #pais = :pais,
+                pais = :pais,
                 descripcion = :descripcion,
                 popularidad = :popularidad`,
             ExpressionAttributeValues: {
