@@ -106,7 +106,7 @@ exports.handler = async (event) => {
 
         // Proceder con la eliminación de la Destino
         const deleteParams = {
-            TableName: REVIEWS_TABLE,
+            TableName: DESTINOS_TABLE,
             Key: {
                 id_destino: data.id_destino,
                 ciudad: data.ciudad
