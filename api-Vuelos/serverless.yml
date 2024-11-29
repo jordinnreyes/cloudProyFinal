@@ -1,0 +1,100 @@
+service: servicio-vuelos-v
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    VUELOS_TABLE: ${self:service}-${self:provider.stage}-vuelos
+    TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
+    AEROLINEAS_TABLE: servicio-vuelos-aero-${self:provider.stage}-aerolineas
+  iam:
+    role: arn:aws:iam::078729045663:role/LabRole
+
+functions:
+  crearVuelo:
+    handler: crearVuelo.lambda_handler
+    events:
+      - http:
+          path: /vuelos
+          method: post
+          cors: true
+
+  obtenerVuelos:
+    handler: obtenerVuelos.lambda_handler
+    events:
+      - http:
+          path: /vuelosget
+          method: post
+          cors: true
+
+  modificarVuelo:
+    handler: modificarVuelo.lambda_handler
+    events:
+      - http:
+          path: /vuelos
+          method: put
+          cors: true
+
+  eliminarVuelo:
+    handler: eliminarVuelo.lambda_handler
+    events:
+      - http:
+          path: /vuelos
+          method: delete
+          cors: true
+
+  validarToken:
+    handler: Lambda_ValidarTokenAcceso.lambda_handler
+    events:
+      - http:
+          path: /usuarios/token/validar
+          method: post
+          cors: true
+    environment:
+      t_tokens_acceso: ${self:provider.environment.TOKENS_TABLE}
+
+resources:
+  Resources:
+    VuelosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.VUELOS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: tenant_id
+            AttributeType: S
+          - AttributeName: id_vuelo
+            AttributeType: S
+          - AttributeName: destino
+            AttributeType: S   # Usado para el LSI
+          - AttributeName: origen
+            AttributeType: S   # Usado para el GSI
+        KeySchema:
+          - AttributeName: tenant_id
+            KeyType: HASH
+          - AttributeName: id_vuelo
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+        # Índice Secundario Local (LSI)
+        LocalSecondaryIndexes:
+          - IndexName: FechaCompraIndex
+            KeySchema:
+              - AttributeName: tenant_id
+                KeyType: HASH
+              - AttributeName: destino
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+        # Índice Secundario Global (GSI)
+        GlobalSecondaryIndexes:
+          - IndexName: pais_origenIndex
+            KeySchema:
+              - AttributeName: origen
+                KeyType: HASH
+              - AttributeName: id_vuelo
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
