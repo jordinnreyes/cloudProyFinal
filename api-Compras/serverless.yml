@@ -45,7 +45,7 @@ functions:
           cors: true
 
   obtenerCompraById:
-    handler: obtenerCompraById.handler
+    handler: obtenerCompraPorId.handler
     events:
       - http:
           path: /compras-id_compra
