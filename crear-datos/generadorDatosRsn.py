@@ -72,7 +72,6 @@ def crear_aerolineas():
 # Función para generar vuelos ficticios
 def crear_vuelos(cantidad=10000, aerolineas=[]):
 
-    aerolineas = crear_aerolineas()
     if not aerolineas:
         print("No se crearon aerolíneas. No se pueden generar vuelos.")
         return
@@ -310,7 +309,11 @@ def generar_destinos(cantidad=5000):
 if __name__ == "__main__":
     try:
         print("Creando aerolíneas ficticias...")
-        aerolineas = crear_aerolineas()  
+        aerolineas = crear_aerolineas()
+        if not aerolineas:  # Verifica si la lista de aerolíneas está vacía
+            print("No se crearon aerolíneas. No se pueden generar vuelos.")
+            return
+        
         print("\nGenerando usuarios ficticios...")
         usuarios = generar_usuarios(cantidad=10000)  
 
