@@ -305,23 +305,24 @@ def generar_destinos(cantidad=5000):
 if __name__ == "__main__":
     try:
         print("Creando aerolíneas ficticias...")
-        aerolineas = crear_aerolineas()  # Asegúrate de que esta función devuelva una lista.
+        aerolineas = crear_aerolineas()  
+        print("\nGenerando usuarios ficticios...")
+        usuarios = generar_usuarios(cantidad=10000)  
 
         if aerolineas:  # Verifica si se crearon aerolíneas
             print("\nGenerando vuelos...")
-            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas)
+            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas)  # Genera vuelos solo si hay aerolíneas
 
-        print("\nGenerando usuarios ficticios...")
-        usuarios = generar_usuarios(cantidad=10000)  # Asegúrate de que devuelva una lista.
+            if usuarios and vuelos:  # Verifica que haya usuarios y vuelos antes de generar reseñas y compras
+                print("\nGenerando reseñas ficticias...")
+                crear_resenas(usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
-        print("\nGenerando reseñas ficticias...")
-        crear_resenas(usuarios=usuarios, vuelos=vuelos)
-
-        print("\nGenerando compras ficticias...")
-        generar_compras(cantidad=10000, usuarios=usuarios, vuelos=vuelos)
+                print("\nGenerando compras ficticias...")
+                generar_compras(cantidad=10000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
         print("\nGenerando destinos ficticios...")
         generar_destinos(cantidad=10000)
     
     except Exception as e:
         print(f"Error durante la ejecución: {e}")
+
