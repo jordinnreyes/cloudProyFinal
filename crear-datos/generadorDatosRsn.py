@@ -263,6 +263,7 @@ def crear_resenas(usuarios, vuelos):
 # Función para generar destinos ficticios
 def generar_destinos(cantidad=5000):
     
+    destinos_table = dynamodb.Table(table_name_destinos)
     """
     Genera destinos ficticios y los inserta en DynamoDB.
     """
