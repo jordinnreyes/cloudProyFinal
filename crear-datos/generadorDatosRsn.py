@@ -72,9 +72,11 @@ def crear_aerolineas():
 # Función para generar vuelos ficticios
 def crear_vuelos(cantidad=10000, aerolineas=[]):
 
-    if not aerolineas:  # Verifica que la lista no esté vacía
-        print("Error: La lista de aerolíneas está vacía. No se pueden generar vuelos.")
+    aerolineas = crear_aerolineas()
+    if not aerolineas:
+        print("No se crearon aerolíneas. No se pueden generar vuelos.")
         return
+
     
     destinos = ['Lima', 'Nueva York', 'París', 'Bogotá', 'Madrid', 'Buenos Aires', 'Tokio', 'Sídney']
     origenes = ['Lima', 'Miami', 'Los Ángeles', 'Sao Paulo', 'México DF', 'Londres', 'Dubai', 'Toronto']
@@ -139,6 +141,8 @@ def generar_usuarios(cantidad=10000):# Nombre de la tabla desde variable de ento
 
 # Función para generar compras ficticias
 def generar_compras(cantidad=10000, usuarios=[], vuelos=[]):
+    print(f"Generando {cantidad} compras para {len(usuarios)} usuarios y {len(vuelos)} vuelos.")
+    
     if not usuarios or not vuelos:
         print("Error: La lista de usuarios o la lista de vuelos está vacía.")
         return
@@ -221,6 +225,7 @@ def generar_fecha():
 
 # Crear reseñas en DynamoDB usando los user_id e id_vuelo de las compras
 def crear_resenas(usuarios, vuelos):
+    print(f"Generando reseñas para {len(usuarios)} usuarios y {len(vuelos)} vuelos.")
     if not usuarios or not vuelos:
         print("Error: La lista de usuarios o la lista de vuelos está vacía.")
         return
