@@ -50,9 +50,15 @@ def crear_aerolineas():
     ]
 
     for aerolinea in aerolineas:
+        item = {
+            'tenant_id': aerolinea['tenant_id'],
+            'codigo': aerolinea['codigo'],
+            'nombre': aerolinea['nombre'],
+            'pais_origen': aerolinea['pais_origen']
+        }
         try:
             table_name_aero = dynamodb.Table(table_name_aerolineas)
-            table_name_aero.put_item(Item=aerolinea)
+            table_name_aero.put_item(Item=item)
             print(f"Aerolínea creada: {aerolinea['nombre']} ({aerolinea['codigo']})")
         except Exception as e:
             print(f"Error al crear aerolínea {aerolinea['nombre']}: {e}")
@@ -65,6 +71,11 @@ def crear_aerolineas():
 
 # Función para generar vuelos ficticios
 def crear_vuelos(cantidad=10000, aerolineas=[]):
+
+    if not aerolineas:  # Verifica que la lista no esté vacía
+        print("Error: La lista de aerolíneas está vacía. No se pueden generar vuelos.")
+        return
+    
     destinos = ['Lima', 'Nueva York', 'París', 'Bogotá', 'Madrid', 'Buenos Aires', 'Tokio', 'Sídney']
     origenes = ['Lima', 'Miami', 'Los Ángeles', 'Sao Paulo', 'México DF', 'Londres', 'Dubai', 'Toronto']
     
