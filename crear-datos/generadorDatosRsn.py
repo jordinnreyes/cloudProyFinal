@@ -307,8 +307,9 @@ if __name__ == "__main__":
         print("Creando aerolíneas ficticias...")
         aerolineas = crear_aerolineas()  # Asegúrate de que esta función devuelva una lista.
 
-        print("\nGenerando vuelos...")
-        vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas)
+        if aerolineas:  # Verifica si se crearon aerolíneas
+            print("\nGenerando vuelos...")
+            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas)
 
         print("\nGenerando usuarios ficticios...")
         usuarios = generar_usuarios(cantidad=10000)  # Asegúrate de que devuelva una lista.
