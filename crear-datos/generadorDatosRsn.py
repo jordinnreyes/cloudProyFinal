@@ -62,7 +62,7 @@ def crear_aerolineas():
             print(f"Aerolínea creada: {aerolinea['nombre']} ({aerolinea['codigo']})")
         except Exception as e:
             print(f"Error al crear aerolínea {aerolinea['nombre']}: {e}")
-
+    return aerolineas  # Retorna la lista de aerolíneas creadas
 # Funciones existentes para reseñas
 
 
@@ -98,7 +98,7 @@ def crear_vuelos(cantidad=10000, aerolineas=[]):
             print(f"Vuelo creado: {item['id_vuelo']['S']} para aerolínea {aerolinea['nombre']}")
         except Exception as e:
             print(f"Error al crear vuelo: {e}")
-
+    return vuelos  # Retornar la lista de vuelos generados
 
 
 
@@ -133,7 +133,7 @@ def generar_usuarios(cantidad=10000):# Nombre de la tabla desde variable de ento
         except Exception as e:
             print(f"Error al registrar el usuario {user_id}: {e}")
 
-
+    return usuarios  # Retornar la lista de usuarios generados
 
 
 #----------------------------GENERAR COMPRAS------------------------------------------
