@@ -54,6 +54,14 @@ exports.handler = async (event) => {
         };
     }
 
+    if (!validationResponse.Payload) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "No se recibió respuesta válida de la validación" })
+        };
+    }
+
+
     let parsedResponse;
     try {
         parsedResponse = JSON.parse(validationResponse.Payload); // Parsea el Payload principal
