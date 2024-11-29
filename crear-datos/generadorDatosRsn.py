@@ -50,15 +50,9 @@ def crear_aerolineas():
     ]
 
     for aerolinea in aerolineas:
-        item = {
-            'tenant_id': {'S': aerolinea['tenant_id']},
-            'codigo': {'S': aerolinea['codigo']},
-            'nombre': {'S': aerolinea['nombre']},
-            'pais_origen': {'S': aerolinea['pais_origen']}
-        }
         try:
             table_name_aero = dynamodb.Table(table_name_aerolineas)
-            table_name_aero.put_item(Item=item)
+            table_name_aero.put_item(Item=aerolinea)
             print(f"Aerolínea creada: {aerolinea['nombre']} ({aerolinea['codigo']})")
         except Exception as e:
             print(f"Error al crear aerolínea {aerolinea['nombre']}: {e}")
@@ -78,14 +72,14 @@ def crear_vuelos(cantidad=10000, aerolineas=[]):
     for _ in range(cantidad):
         aerolinea = random.choice(aerolineas)  # Asociar vuelo a una aerolínea existente
         item = {
-            'tenant_id': {'S': aerolinea['tenant_id']},
-            'codigo': {'S': aerolinea['codigo']},
-            'id_vuelo': {'S': str(uuid.uuid4())},
-            'origen': {'S': random.choice(origenes)},
-            'destino': {'S': random.choice(destinos)},
-            'fecha_salida': {'S': (datetime.now() + timedelta(days=random.randint(1, 30))).strftime('%Y-%m-%d %H:%M:%S')},
-            'fecha_llegada': {'S': (datetime.now() + timedelta(days=random.randint(31, 60))).strftime('%Y-%m-%d %H:%M:%S')},
-            'capacidad': {'N': str(random.randint(50, 300))}
+            'tenant_id': aerolinea['tenant_id'],
+            'codigo': aerolinea['codigo'],
+            'id_vuelo': str(uuid.uuid4()),
+            'origen': random.choice(origenes),
+            'destino': random.choice(destinos),
+            'fecha_salida': (datetime.now() + timedelta(days=random.randint(1, 30))).strftime('%Y-%m-%d %H:%M:%S'),
+            'fecha_llegada': (datetime.now() + timedelta(days=random.randint(31, 60))).strftime('%Y-%m-%d %H:%M:%S'),
+            'capacidad': random.randint(50, 300)
         }
         try:
             table_vuelos.put_item(Item=item)
