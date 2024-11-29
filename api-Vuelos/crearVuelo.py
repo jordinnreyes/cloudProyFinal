@@ -167,7 +167,7 @@ def lambda_handler(event, context):
             'origen': {'S': data.get('origen')},
             'destino': {'S': data.get('destino')},
             'fecha_salida': {'S': data.get('fecha_salida')},
-            'fecha_llegada': {'S': data.get('nombre')},
+            'fecha_llegada': {'S': data.get('fecha_llegada')},
             'capacidad': {'S': data.get('capacidad')}
         }
 
