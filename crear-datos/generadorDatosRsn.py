@@ -6,7 +6,14 @@ import os
 
 
 # Configuración de DynamoDB
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+# Configuración de DynamoDB con credenciales
+dynamodb = boto3.resource(
+    'dynamodb',
+    region_name='us-east-1',
+    aws_access_key_id='ASIAREVE542P5UMBBDF7',
+    aws_secret_access_key='ExwHOMhih9gX8mWG5uffTg6I3vSNZXCmgyof9WEN',
+    aws_session_token='IQoJb3JpZ2luX2VjENT//////////wEaCXVzLXdlc3QtMiJIMEYCIQD8oe7hQFLIdyvK3+JBd6+GxIf+d7UMzbGFcGVALTcSUgIhAPBcB0OCWfXkOl7+MviBSKD4XLIZGaUD3ECxfjxcBhOZKrcCCH0QAxoMMDc4NzI5MDQ1NjYzIgyVM+i6VBXODkN2W2wqlAIzWECRskbK6Y3/34DaAEyUCGqEz7v30DbxG5P2uKjHYhmL+GQWDndVJbFnFRAgs6tubdWPkJB8Mq1mtBkSsnvdrhlOqzTuFNZi/Eu3wkSt3fVQUZybNCJP33yRSrqYzvbtalmYSYtU3RVAF/vD5tzXtb2eA5vHB0brWmO5Kt+HeCRouA+wLC+Vl1kARciQx7mnQnrpsMq5ALa07dP1p1tWIT5pMwCJJjfU7wRw+ILc95dsX4m6L2q65KGE4p+MoB3XhHgGqT0dER0aN8ABsi103jsO5VvHaTZt/sxS2RoHa1F9XIC/cjaqzqBx1tAqNlkQ8kozvfjV9M4UZLhG8Lt4wP1rsPBF/7K9mZa3n4r+oiqSnC0wl6+ougY6nAELpRaxdYtFZJUG54/XVZPSPFnoB+ftpRDzmKPecPBM6X6RMXi8YKirMKuhQyT2KA3j95nS1DQU9Y52uQ81zOok/3c5mznd65bVXFW3lUnIBKf1WOGvB4aohGhsBdpVBTKjoLcbAoFD3AmOhQqg11PtNw9hEP9+qKDgXeQL+6oMg5ogW8LRN7aBQU1b4HsZnrSGXY98hLUZlmTrAOg='
+)
 table_name = "servicio-vuelos-r-dev-resenas"
 
  # Cambia esto por el nombre de tu tabla
