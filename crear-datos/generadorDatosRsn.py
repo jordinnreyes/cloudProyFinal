@@ -92,12 +92,12 @@ def crear_vuelos(cantidad=10000, aerolineas=[]):
             'destino': random.choice(destinos),
             'fecha_salida': (datetime.now() + timedelta(days=random.randint(1, 30))).strftime('%Y-%m-%d %H:%M:%S'),
             'fecha_llegada': (datetime.now() + timedelta(days=random.randint(31, 60))).strftime('%Y-%m-%d %H:%M:%S'),
-            'capacidad': random.randint(50, 300)
+            'capacidad': str(random.randint(50, 300))  # Convertir a string
         }
         try:
             table_vuelos.put_item(Item=item)
             vuelos.append(item)
-            print(f"Vuelo creado: {item['id_vuelo']['S']} para aerolínea {aerolinea['nombre']}")
+            print(f"Vuelo creado: {item['id_vuelo']} para aerolínea {aerolinea['nombre']}")
         except Exception as e:
             print(f"Error al crear vuelo: {e}")
     return vuelos  # Retornar la lista de vuelos generados
@@ -165,7 +165,7 @@ def generar_compras(cantidad=10000, usuarios=[], vuelos=[]):
             id_vuelo = random.choice(vuelos)
             fecha_compra = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             cantidad_boletos = random.randint(1, 5)  # Entre 1 y 5 boletos por compra
-            precio_total = random.randint(50, 500)  # Precio por boleto entre $50 y $500
+            precio_total = str(random.randint(50, 700))  # Precio por boleto entre $50 y $500
 
             # Crear el ítem para DynamoDB
             item = {
