@@ -45,7 +45,7 @@ functions:
           cors: true
 
   obtenerAerolineaById:
-    handler: obtenerAerolineaById.lambda_handler
+    handler: obtenerAerolineaPorId.lambda_handler
     events:
       - http:
           path: /Aerolinea/{tenant_id}
