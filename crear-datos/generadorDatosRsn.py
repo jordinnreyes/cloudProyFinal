@@ -237,7 +237,7 @@ def crear_resenas(usuarios, vuelos):
     # Generamos reseñas basadas en las compras
     for _ in range(5000):  # Crear 100 reseñas
         user_id = random.choice(usuarios)  # Seleccionar un usuario de la lista de usuarios
-        id_vuelo = random.choice(vuelos)  # Seleccionar un vuelo de la lista de vuelos
+        id_vuelo = random.choice(vuelos)['id_vuelo']  # Asegurarte de acceder solo al valor 'id_vuelo' dentro del diccionario  
         
         # Si ya hay una compra para este usuario y vuelo, se genera la reseña
         calificacion = generar_calificacion()
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
         if aerolineas:  # Verifica si se crearon aerolíneas
             print("\nGenerando vuelos...")
-            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas) 
+            vuelos = crear_vuelos(cantidad=1000, aerolineas=aerolineas) 
             if not vuelos:  # Verifica si la lista de aerolíneas está vacía
                 print("No se crearon vuelos. No se pueden generar .")
                 exit()# Genera vuelos solo si hay aerolíneas
@@ -333,7 +333,7 @@ if __name__ == "__main__":
                 crear_resenas(usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
                 print("\nGenerando compras ficticias...")
-                generar_compras(cantidad=10000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
+                generar_compras(cantidad=1000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
         # Comentado la generación de destinos, ya que ya se crearon muchos
         #print("\nGenerando destinos ficticios...")
