@@ -331,8 +331,9 @@ if __name__ == "__main__":
                 print("\nGenerando compras ficticias...")
                 generar_compras(cantidad=10000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
-        print("\nGenerando destinos ficticios...")
-        generar_destinos(cantidad=10000)
+        # Comentado la generación de destinos, ya que ya se crearon muchos
+        #print("\nGenerando destinos ficticios...")
+        #generar_destinos(cantidad=10000)
     
     except Exception as e:
         print(f"Error durante la ejecución: {e}")
