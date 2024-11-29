@@ -141,18 +141,11 @@ def lambda_handler(event, context):
             }
         )
 
-        if response.get('Attributes'):
-            logging.info("vuelo eliminada: %s", response['Attributes'])
-            return {
-                'statusCode': 200,
-                'body': json.dumps({'message': 'vuelo eliminada con éxito'})
-            }
-        else:
-            logging.warning("vuelo no encontrada para eliminar")
-            return {
-                'statusCode': 404,
-                'body': json.dumps({'message': 'vuelo no encontrada'})
-            }
+        logging.info("Vuelo eliminado exitosamente: %s", response)
+        return {
+            'statusCode': 200,
+            'body': json.dumps({'message': 'vuelo eliminada con éxito'})
+        }
     except Exception as error:
         logging.error("Error al eliminar la vuelo de DynamoDB: %s", error)
         return {
