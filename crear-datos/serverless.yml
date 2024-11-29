@@ -1,0 +1,25 @@
+service: crear-datos
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    VUELOS_TABLE: servicio-vuelos-v-${self:provider.stage}-vuelos
+    REVIEWS_TABLE: servicio-vuelos-r-${self:provider.stage}-resenas 
+    AEROLINEAS_TABLE: servicio-vuelos-aero-${self:provider.stage}-aerolineas
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:BatchWriteItem
+        - dynamodb:GetItem
+        - dynamodb:Query
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:table/${self:provider.environment.REVIEWS_TABLE}
+
+functions:
+  creardatos:
+    handler: generadorDatosRsn.creardatos
+
