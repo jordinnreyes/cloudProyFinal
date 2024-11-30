@@ -319,11 +319,11 @@ if __name__ == "__main__":
             exit()
         
         print("\nGenerando usuarios ficticios...")
-        usuarios = generar_usuarios(cantidad=1000)  
+        usuarios = generar_usuarios(cantidad=10000)  
 
         if aerolineas:  # Verifica si se crearon aerolíneas
             print("\nGenerando vuelos...")
-            vuelos = crear_vuelos(cantidad=1000, aerolineas=aerolineas) 
+            vuelos = crear_vuelos(cantidad=10000, aerolineas=aerolineas) 
             if not vuelos:  # Verifica si la lista de aerolíneas está vacía
                 print("No se crearon vuelos. No se pueden generar .")
                 exit()# Genera vuelos solo si hay aerolíneas
@@ -333,7 +333,7 @@ if __name__ == "__main__":
                 crear_resenas(usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
                 print("\nGenerando compras ficticias...")
-                generar_compras(cantidad=1000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
+                generar_compras(cantidad=10000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
         # Comentado la generación de destinos, ya que ya se crearon muchos
         #print("\nGenerando destinos ficticios...")
