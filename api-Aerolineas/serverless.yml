@@ -19,6 +19,7 @@ functions:
           path: /aerolineas
           method: post
           cors: true
+          integration: lambda
 
   obtenerAerolineas:
     handler: obtenerAerolineas.lambda_handler
@@ -27,6 +28,7 @@ functions:
           path: /aerolineasget
           method: post
           cors: true
+          integration: lambda
 
   modificarAerolinea:
     handler: modificarAerolinea.lambda_handler
@@ -35,6 +37,7 @@ functions:
           path: /aerolineas
           method: put
           cors: true
+          integration: lambda
 
   eliminarAerolinea:
     handler: eliminarAerolinea.lambda_handler
@@ -43,6 +46,7 @@ functions:
           path: /aerolineas
           method: delete
           cors: true
+          integration: lambda
 
   obtenerAerolineaById:
     handler: obtenerAerolineaPorId.lambda_handler
@@ -51,6 +55,7 @@ functions:
           path: /Aerolinea/{tenant_id}
           method: get
           cors: true
+          integration: lambda
 
   validarToken:
     handler: Lambda_ValidarTokenAcceso.lambda_handler
@@ -60,6 +65,7 @@ functions:
           path: /usuarios/token/validar
           method: post
           cors: true
+          integration: lambda
     environment:
       t_tokens_acceso: ${self:provider.environment.TOKENS_TABLE}
 
