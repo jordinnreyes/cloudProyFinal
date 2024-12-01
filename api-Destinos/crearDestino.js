@@ -11,9 +11,20 @@ exports.handler = async (event) => {
     console.log("Contenido de event.body:", event.body);
 
     // Intentamos parsear el cuerpo de la solicitud
+
     let data;
     try {
+        // Validar si `event.body` es un string JSON válido o ya es un objeto
         data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+    
+        // Validar que el cuerpo no sea nulo o vacío
+        if (!data || typeof data !== "object") {
+            console.error("Body no es un objeto válido:", data);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Body no es un objeto válido" })
+            };
+        }
     } catch (error) {
         console.error("Error al parsear event.body:", error);
         return {
@@ -21,6 +32,7 @@ exports.handler = async (event) => {
             body: JSON.stringify({ message: "Body no es un JSON válido" })
         };
     }
+
 
     // Inicio - Proteger el Lambda con la validación del token
     const token = event.headers.Authorization?.split(' ')[1];
