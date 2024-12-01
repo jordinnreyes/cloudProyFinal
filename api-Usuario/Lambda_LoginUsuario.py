@@ -88,11 +88,19 @@ def lambda_handler(event, context):
         print("Token stored successfully.")
 
         # Respuesta exitosa
-        user_id = user_id.replace('"', '\\"')
-        token = token.replace('"', '\\"')
+        #user_id = user_id.replace('"', '\\"')
+        #token = token.replace('"', '\\"')
+        #return {
+        #    'statusCode': 200,
+        #    'body': f'{{"message": "User login successfully", "user_id": "{user_id}", "token": "{token}"}}'
+        #}
         return {
             'statusCode': 200,
-            'body': f'{{"message": "User login successfully", "user_id": "{user_id}", "token": "{token}"}}'
+            'body': json.dumps({
+                "message": "User login successfully",
+                "user_id": user_id,
+                "token": token
+            })
         }
 
     except Exception as e:
