@@ -15,7 +15,14 @@ def lambda_handler(event, context):
         print("Lambda function invoked.")
         
         # Leer cuerpo de la solicitud
-        body = json.loads(event.get('body', '{}'))
+        try:
+            body = json.loads(event.get('body', '{}'))
+        except json.JSONDecodeError:
+            return {
+                'statusCode': 400,
+                'body': '{"message": "Invalid JSON format in request body"}}'
+            }
+
         print(f"Request body: {body}")
         
         user_id = body.get('user_id')
@@ -81,6 +88,8 @@ def lambda_handler(event, context):
         print("Token stored successfully.")
 
         # Respuesta exitosa
+        user_id = user_id.replace('"', '\\"')
+        token = token.replace('"', '\\"')
         return {
             'statusCode': 200,
             'body': f'{{"message": "User login successfully", "user_id": "{user_id}", "token": "{token}"}}'
@@ -91,5 +100,5 @@ def lambda_handler(event, context):
         print("Exception occurred:", str(e))
         return {
             'statusCode': 500,
-            'body': '{"message": "Internal server error"}}'
+            'body': f'{{"message": "Internal server error", "error": "{str(e)}"}}'
         }
