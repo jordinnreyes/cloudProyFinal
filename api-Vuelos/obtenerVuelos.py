@@ -16,6 +16,9 @@ def lambda_handler(event, context):
     # Obtener el tenant_id desde los parámetros de la URL o cuerpo del evento
     tenant_id = event.get('pathParameters', {}).get('tenant_id', None)
     
+    print(f"tenant_id recibido: {tenant_id}")  # Usando print
+    logging.info(f"tenant_id recibido: {tenant_id}")  # Usando logging
+    
     if not tenant_id:
         logging.error("El tenant_id es obligatorio")
         return {
