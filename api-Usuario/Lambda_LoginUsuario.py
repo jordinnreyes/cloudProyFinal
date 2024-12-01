@@ -15,14 +15,7 @@ def lambda_handler(event, context):
         print("Lambda function invoked.")
         
         # Leer cuerpo de la solicitud
-        try:
-            body = json.loads(event.get('body', '{}'))
-        except json.JSONDecodeError:
-            return {
-                'statusCode': 400,
-                'body': json.dumps({"message": "Invalid JSON format in request body"})
-            }
-
+        body = json.loads(event.get('body', '{}'))
         print(f"Request body: {body}")
         
         user_id = body.get('user_id')
@@ -32,7 +25,7 @@ def lambda_handler(event, context):
             print("Missing user_id or password.")
             return {
                 'statusCode': 400,
-                'body': json.dumps({"message": "Missing user_id or password"})
+                'body': json.dumps({'error': 'Missing user_id or password'})
             }
 
         # Hashear la contraseña ingresada
@@ -53,7 +46,7 @@ def lambda_handler(event, context):
             print("User not found in DynamoDB.")
             return {
                 'statusCode': 403,
-                'body': json.dumps({"message": "User does not exist"})
+                'body': json.dumps({'error': 'User does not exist'})
             }
 
         # Validar contraseña
@@ -64,7 +57,7 @@ def lambda_handler(event, context):
             print("Incorrect password.")
             return {
                 'statusCode': 403,
-                'body': json.dumps({"message": "Password Incorrecto"})
+                'body': json.dumps({'error': 'Password incorrecto'})
             }
 
         # Generar token
@@ -88,27 +81,15 @@ def lambda_handler(event, context):
         print("Token stored successfully.")
 
         # Respuesta exitosa
-        #user_id = user_id.replace('"', '\\"')
-        #token = token.replace('"', '\\"')
-        #return {
-        #    'statusCode': 200,
-        #    'body': f'{{"message": "User login successfully", "user_id": "{user_id}", "token": "{token}"}}'
-        #}
         return {
             'statusCode': 200,
-            'body': json.dumps({
-                "message": "User login successfully",
-                "user_id": user_id,
-                "token": token
-            })
+            'body': json.dumps({'token': token})
         }
 
     except Exception as e:
-    # Imprimir error completo para depuración
+        # Imprimir error completo para depuración
         print("Exception occurred:", str(e))
         return {
             'statusCode': 500,
             'body': json.dumps({'error': 'Internal server error', 'details': str(e)})
         }
-
-
