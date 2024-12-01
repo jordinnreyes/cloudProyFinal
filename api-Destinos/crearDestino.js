@@ -13,25 +13,39 @@ exports.handler = async (event) => {
     // Intentamos parsear el cuerpo de la solicitud
 
     let data;
-    try {
-        // Validar si `event.body` es un string JSON válido o ya es un objeto
-        data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-    
-        // Validar que el cuerpo no sea nulo o vacío
-        if (!data || typeof data !== "object") {
-            console.error("Body no es un objeto válido:", data);
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: "Body no es un objeto válido" })
-            };
-        }
-    } catch (error) {
-        console.error("Error al parsear event.body:", error);
+    if (!event.body) {
+        console.error("Body no existe en el evento");
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "Body no es un JSON válido" })
+            body: JSON.stringify({ message: "Body no existe en el evento" })
         };
     }
+    
+    // Si `event.body` es un string, intenta parsearlo
+    if (typeof event.body === "string") {
+        data = JSON.parse(event.body);
+    } else if (typeof event.body === "object") {
+        data = event.body;
+    } else {
+        console.error("Body no es un JSON válido ni un objeto:", event.body);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Body no es un JSON válido ni un objeto" })
+        };
+    }
+    
+    // Verifica que `data` sea un objeto válido
+    if (!data || typeof data !== "object") {
+        console.error("Body parseado no es un objeto válido:", data);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: "Body parseado no es un objeto válido" })
+        };
+    }
+    
+    console.log("Cuerpo de la solicitud parseado con éxito:", data);
+    // Continúa con el procesamiento de `data`
+
 
 
     // Inicio - Proteger el Lambda con la validación del token
