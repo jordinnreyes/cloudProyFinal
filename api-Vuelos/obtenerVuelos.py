@@ -15,7 +15,16 @@ def format_vuelo(vuelo):
     Función para formatear los vuelos, desestructurando el formato de DynamoDB
     y convirtiendo las claves y valores a un formato más comprensible.
     """
-    return {key: value.get('S') if isinstance(value, dict) and 'S' in value else value for key, value in vuelo.items()}
+    return {
+        'codigo': vuelo.get('codigo', {}).get('S'),
+        'origen': vuelo.get('origen', {}).get('S'),
+        'destino': vuelo.get('destino', {}).get('S'),
+        'fecha_salida': vuelo.get('fecha_salida', {}).get('S'),
+        'fecha_llegada': vuelo.get('fecha_llegada', {}).get('S'),
+        'capacidad': vuelo.get('capacidad', {}).get('N'),
+        'tenant_id': vuelo.get('tenant_id', {}).get('S'),
+        'id_vuelo': vuelo.get('id_vuelo', {}).get('S')
+    }
 
 def lambda_handler(event, context):
     logging.info("Iniciando Lambda para obtener todos los vuelos")
@@ -39,7 +48,7 @@ def lambda_handler(event, context):
         # Formatear los vuelos para hacerlos más legibles
         vuelos_formateados = [format_vuelo(vuelo) for vuelo in items]
         
-        # Retornar las vuelos de manera estructurada
+        # Retornar los vuelos de manera estructurada
         return {
             'statusCode': 200,
             'body': json.dumps({
