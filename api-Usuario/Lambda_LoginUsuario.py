@@ -83,7 +83,7 @@ def lambda_handler(event, context):
         # Respuesta exitosa
         return {
             'statusCode': 200,
-            'body': '{"message": "User login successfully", "user_id": "{user_id}"}}'
+            'body': f'{{"message": "User login successfully", "user_id": "{user_id}", "token": "{token}"}}'
         }
 
     except Exception as e:
