@@ -10,35 +10,47 @@ table_name = os.environ['VUELOS_TABLE']
 # Configuración del logging
 logging.basicConfig(level=logging.INFO)
 
-def lambda_handler(event, context):
-    logging.info("Iniciando lambda para obtener todas las vuelos")
+def format_vuelo(vuelo):
+    """
+    Función para formatear los vuelos, desestructurando el formato de DynamoDB
+    y convirtiendo las claves y valores a un formato más comprensible.
+    """
+    return {key: value.get('S') if isinstance(value, dict) and 'S' in value else value for key, value in vuelo.items()}
 
-    # Consultar todas las vuelos en DynamoDB
+def lambda_handler(event, context):
+    logging.info("Iniciando Lambda para obtener todos los vuelos")
+
     try:
+        # Consultar todos los vuelos en DynamoDB
         response = dynamodb.scan(
             TableName=table_name
         )
         
         # Recuperar los elementos
         items = response.get('Items', [])
+        
         if not items:
+            logging.info("No se encontraron vuelos en la tabla")
             return {
                 'statusCode': 404,
                 'body': json.dumps({'message': 'No se encontraron vuelos'})
             }
 
-        # Retornar todas las vuelos encontradas
+        # Formatear los vuelos para hacerlos más legibles
+        vuelos_formateados = [format_vuelo(vuelo) for vuelo in items]
+        
+        # Retornar todas las vuelos encontradas de manera legible
         return {
             'statusCode': 200,
             'body': json.dumps({
-                'message': 'vuelos encontradas',
-                'vuelos': items
-            })
+                'message': 'Vuelos encontrados',
+                'vuelos': vuelos_formateados
+            }, indent=4)
         }
 
     except Exception as error:
-        logging.error("Error al consultar las vuelos en DynamoDB: %s", error)
+        logging.error("Error al consultar los vuelos en DynamoDB: %s", error)
         return {
             'statusCode': 500,
-            'body': json.dumps({'message': 'Error al obtener las vuelos'})
+            'body': json.dumps({'message': 'Error al obtener los vuelos'})
         }
