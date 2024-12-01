@@ -47,7 +47,7 @@ def lambda_handler(event, context):
             # Retornar un código de estado HTTP 200 (OK) y un mensaje de éxito
             return {
                 'statusCode': 200,
-                'body': '{"message": "User registered successfully", "user_id": "' + user_id + '"}'
+                'body': '{"message": "User registered successfully", "user_id": "{user_id}"}}'
             }
         else:
             return {
