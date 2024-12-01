@@ -27,7 +27,7 @@ functions:
     events:
       - http:
           path: /vuelosget/{tenant_id}
-          method: post
+          method: get
           cors: true
           integration: lambda
 
