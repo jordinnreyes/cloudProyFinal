@@ -25,7 +25,7 @@ def lambda_handler(event, context):
             print("Missing user_id or password.")
             return {
                 'statusCode': 400,
-                'body': json.dumps({'error': 'Missing user_id or password'})
+                'body': '{"message": "Missing user_id or password"}}'
             }
 
         # Hashear la contraseña ingresada
@@ -46,7 +46,7 @@ def lambda_handler(event, context):
             print("User not found in DynamoDB.")
             return {
                 'statusCode': 403,
-                'body': json.dumps({'error': 'User does not exist'})
+                'body': '{"message": "User does not exist"}}'
             }
 
         # Validar contraseña
@@ -57,7 +57,7 @@ def lambda_handler(event, context):
             print("Incorrect password.")
             return {
                 'statusCode': 403,
-                'body': json.dumps({'error': 'Password incorrecto'})
+                'body': '{"message": "Password Incorrecto"}}'
             }
 
         # Generar token
@@ -83,7 +83,7 @@ def lambda_handler(event, context):
         # Respuesta exitosa
         return {
             'statusCode': 200,
-            'body': json.dumps({'token': token})
+            'body': '{"message": "User login successfully", "user_id": "{user_id}"}}'
         }
 
     except Exception as e:
@@ -91,5 +91,5 @@ def lambda_handler(event, context):
         print("Exception occurred:", str(e))
         return {
             'statusCode': 500,
-            'body': json.dumps({'error': 'Internal server error', 'details': str(e)})
+            'body': '{"message": "Internal server error"}}'
         }
