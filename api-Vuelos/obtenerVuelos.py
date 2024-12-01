@@ -10,50 +10,54 @@ table_name = os.environ['VUELOS_TABLE']
 # Configuración del logging
 logging.basicConfig(level=logging.INFO)
 
+
 def format_vuelo(vuelo):
     """
-    Función para formatear los vuelos, desestructurando el formato de DynamoDB
-    y convirtiendo las claves y valores a un formato más comprensible.
+    Función para formatear un vuelo de DynamoDB a un formato más legible.
     """
-    return {
-        'codigo': vuelo.get('codigo', {}).get('S'),
-        'origen': vuelo.get('origen', {}).get('S'),
-        'destino': vuelo.get('destino', {}).get('S'),
-        'fecha_salida': vuelo.get('fecha_salida', {}).get('S'),
-        'fecha_llegada': vuelo.get('fecha_llegada', {}).get('S'),
-        'capacidad': vuelo.get('capacidad', {}).get('N'),
-        'tenant_id': vuelo.get('tenant_id', {}).get('S'),
-        'id_vuelo': vuelo.get('id_vuelo', {}).get('S')
-    }
+    return {key: value.get('S') if isinstance(value, dict) and 'S' in value else value.get('N') if isinstance(value, dict) and 'N' in value else value for key, value in vuelo.items()}
+
 
 def lambda_handler(event, context):
-    logging.info("Iniciando Lambda para obtener todos los vuelos")
+    logging.info("Evento recibido: %s", event)
+
+    # Obtener tenant_id de los parámetros de la solicitud
+    tenant_id = event.get('pathParameters', {}).get('tenant_id', None)
+    if not tenant_id:
+        logging.error("El tenant_id no está presente en los parámetros de la solicitud.")
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'message': 'El tenant_id es obligatorio'})
+        }
 
     try:
-        # Consultar todos los vuelos en DynamoDB
-        response = dynamodb.scan(
-            TableName=table_name
+        # Consultar los vuelos por tenant_id en DynamoDB
+        response = dynamodb.query(
+            TableName=table_name,
+            IndexName='tenant_id-index',  # Nombre del índice secundario global, si aplica
+            KeyConditionExpression='tenant_id = :tenant_id',
+            ExpressionAttributeValues={
+                ':tenant_id': {'S': tenant_id}
+            }
         )
-        
+
         # Recuperar los elementos
         items = response.get('Items', [])
-        
         if not items:
-            logging.info("No se encontraron vuelos en la tabla")
             return {
                 'statusCode': 404,
-                'body': json.dumps({'message': 'No se encontraron vuelos'})
+                'body': json.dumps({'message': f'No se encontraron vuelos para el tenant_id: {tenant_id}'})
             }
 
-        # Formatear los vuelos para hacerlos más legibles
-        vuelos_formateados = [format_vuelo(vuelo) for vuelo in items]
-        
-        # Retornar los vuelos de manera estructurada
+        # Convertir los vuelos a un formato legible
+        vuelos = [format_vuelo(item) for item in items]
+
+        # Retornar los vuelos encontrados
         return {
             'statusCode': 200,
             'body': json.dumps({
                 'message': 'Vuelos encontrados',
-                'vuelos': vuelos_formateados
+                'vuelos': vuelos
             })
         }
 
@@ -61,5 +65,5 @@ def lambda_handler(event, context):
         logging.error("Error al consultar los vuelos en DynamoDB: %s", error)
         return {
             'statusCode': 500,
-            'body': json.dumps({'message': 'Error al obtener los vuelos'})
+            'body': json.dumps({'message': 'Error al obtener los vuelos', 'error': str(error)})
         }
