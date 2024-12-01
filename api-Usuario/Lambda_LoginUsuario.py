@@ -15,10 +15,17 @@ def lambda_handler(event, context):
         print("Lambda function invoked.")
         
         # Leer cuerpo de la solicitud
-        body = json.loads(event['body']) if 'body' in event and event['body'] else {}
-        #body = json.loads(event.get('body', '{}'))
+        if 'body' in event and event['body']:
+            if isinstance(event['body'], str):
+                body = json.loads(event['body'])  # Convertir de string a JSON
+            elif isinstance(event['body'], dict):
+                body = event['body']  # Ya es un diccionario
+            else:
+                raise ValueError("Invalid body format")
+        else:
+            body = {}
+
         print(f"Request body: {body}")
-        print(type(event.get('body', '{}')))
         
         user_id = body.get('user_id')
         password = body.get('password')
