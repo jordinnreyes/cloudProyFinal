@@ -28,6 +28,7 @@ functions:
           path: /destinosget
           method: post
           cors: true
+          integration: lambda
 
   modificarDestino:
     handler: modificarDestino.handler
@@ -36,6 +37,7 @@ functions:
           path: /destinos
           method: put
           cors: true
+          integration: lambda
 
   eliminarDestino:
     handler: eliminarDestino.handler
@@ -44,6 +46,7 @@ functions:
           path: /destinos
           method: delete
           cors: true
+          integration: lambda
   validarToken:
     handler: Lambda_ValidarTokenAcceso.lambda_handler
     runtime: python3.9
@@ -52,6 +55,7 @@ functions:
           path: /usuarios/token/validar
           method: post
           cors: true
+          integration: lambda
     environment:
       t_tokens_acceso: ${self:provider.environment.TOKENS_TABLE}
 
