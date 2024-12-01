@@ -27,6 +27,7 @@ functions:
           path: /reviewsGet
           method: post
           cors: true
+          integration: lambda
 
   modificarResenia:
     handler: modificarResenia.handler
@@ -35,6 +36,7 @@ functions:
           path: /reviews
           method: put
           cors: true
+          integration: lambda
 
   eliminarResenia:
     handler: eliminarResenia.handler
@@ -43,6 +45,7 @@ functions:
           path: /reviews
           method: delete
           cors: true
+          integration: lambda
 
   validarToken:
     handler: Lambda_ValidarTokenAcceso.lambda_handler
@@ -51,6 +54,7 @@ functions:
           path: /usuarios/token/validar
           method: post
           cors: true
+          integration: lambda
     environment:
       t_tokens_acceso: ${self:provider.environment.TOKENS_TABLE}
 
