@@ -27,7 +27,6 @@ def lambda_handler(event, context):
     try:
         response = dynamodb.query(
             TableName=table_name,
-            IndexName="tenant_id-index",  # Suponiendo que tienes un índice secundario global por tenant_id
             KeyConditionExpression="tenant_id = :tenant_id",
             ExpressionAttributeValues={
                 ":tenant_id": {'S': tenant_id}
