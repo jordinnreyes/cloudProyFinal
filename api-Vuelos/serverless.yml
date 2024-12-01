@@ -93,13 +93,11 @@ resources:
             Projection:
               ProjectionType: ALL
 
-        # Índice Secundario Global (GSI)
+        # Índice Secundario Global (GSI) para tenant_id
         GlobalSecondaryIndexes:
-          - IndexName: pais_origenIndex
+          - IndexName: tenant_id-index
             KeySchema:
-              - AttributeName: origen
+              - AttributeName: tenant_id
                 KeyType: HASH
-              - AttributeName: id_vuelo
-                KeyType: RANGE
             Projection:
               ProjectionType: ALL
