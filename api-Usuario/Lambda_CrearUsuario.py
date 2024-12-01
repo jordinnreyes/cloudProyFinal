@@ -45,30 +45,20 @@ def lambda_handler(event, context):
             print(f"Put item response: {response}")  
 
             # Retornar un código de estado HTTP 200 (OK) y un mensaje de éxito
-            mensaje = {
-                'message': 'User registered successfully',
-                'user_id': user_id
-            }
             return {
                 'statusCode': 200,
-                'body': json.dumps(mensaje)
+                'body': '{"message": "User registered successfully", "user_id": "' + user_id + '"}'
             }
         else:
-            mensaje = {
-                'error': 'Invalid request body: missing user_id or password'
-            }
             return {
                 'statusCode': 400,
-                'body': json.dumps(mensaje)
+                'body': '{"message": "Invalid request body: missing user_id or password"}'
             }
 
     except Exception as e:
         # Excepción y retornar un código de error HTTP 500
-        print("Exception:", str(e))
-        mensaje = {
-            'error': str(e)
-        }        
+        print("Exception:", str(e))         
         return {
             'statusCode': 500,
-            'body': json.dumps(mensaje)
+            'body': '{"message": "Error ocurrido"}'
         }
