@@ -20,7 +20,7 @@ def lambda_handler(event, context):
         except json.JSONDecodeError:
             return {
                 'statusCode': 400,
-                'body': '{"message": "Invalid JSON format in request body"}}'
+                'body': json.dumps({"message": "Invalid JSON format in request body"})
             }
 
         print(f"Request body: {body}")
@@ -32,7 +32,7 @@ def lambda_handler(event, context):
             print("Missing user_id or password.")
             return {
                 'statusCode': 400,
-                'body': '{"message": "Missing user_id or password"}}'
+                'body': json.dumps({"message": "Missing user_id or password"})
             }
 
         # Hashear la contraseña ingresada
@@ -53,7 +53,7 @@ def lambda_handler(event, context):
             print("User not found in DynamoDB.")
             return {
                 'statusCode': 403,
-                'body': '{"message": "User does not exist"}}'
+                'body': json.dumps({"message": "User does not exist"})
             }
 
         # Validar contraseña
@@ -64,7 +64,7 @@ def lambda_handler(event, context):
             print("Incorrect password.")
             return {
                 'statusCode': 403,
-                'body': '{"message": "Password Incorrecto"}}'
+                'body': json.dumps({"message": "Password Incorrecto"})
             }
 
         # Generar token
