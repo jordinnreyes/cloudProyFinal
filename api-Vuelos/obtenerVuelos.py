@@ -39,13 +39,13 @@ def lambda_handler(event, context):
         # Formatear los vuelos para hacerlos más legibles
         vuelos_formateados = [format_vuelo(vuelo) for vuelo in items]
         
-        # Retornar todas las vuelos encontradas de manera legible
+        # Retornar todas las vuelos encontradas de manera estructurada
         return {
             'statusCode': 200,
             'body': json.dumps({
                 'message': 'Vuelos encontrados',
                 'vuelos': vuelos_formateados
-            }, indent=4)
+            })
         }
 
     except Exception as error:
