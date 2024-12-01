@@ -73,8 +73,6 @@ resources:
             AttributeType: S
           - AttributeName: destino
             AttributeType: S   # Usado para el LSI
-          - AttributeName: origen
-            AttributeType: S   # Usado para el GSI
         KeySchema:
           - AttributeName: tenant_id
             KeyType: HASH
