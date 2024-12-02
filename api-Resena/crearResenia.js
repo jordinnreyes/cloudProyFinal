@@ -28,7 +28,7 @@ exports.handler = async (event) => {
             };
         }
 
-        // Intentar parsear el cuerpo si es un string
+        // Verificar si body es una cadena antes de intentar parsearla
         if (typeof body === "string") {
             try {
                 data = JSON.parse(body);
@@ -36,10 +36,11 @@ exports.handler = async (event) => {
                 console.error("Error de decodificación JSON:", e);
                 return {
                     statusCode: 400,
-                    body: JSON.stringify({ message: 'Error de decodificación JSON' })
+                    body: JSON.stringify({ message: 'Error de decodificación JSON: ' + e.message })
                 };
             }
         } else if (typeof body === "object") {
+            // Si es un objeto ya, no es necesario parsear
             data = body;
         } else {
             console.error("Formato de cuerpo no válido:", typeof body);
