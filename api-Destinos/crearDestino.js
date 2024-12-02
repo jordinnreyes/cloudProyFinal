@@ -85,15 +85,17 @@ exports.handler = async (event) => {
     let parsedResponse;
     try {
         parsedResponse = JSON.parse(validationResponse.Payload); // Parsea el Payload principal
-        parsedResponse.body = JSON.parse(parsedResponse.body);  // Parsea el body interno
+    
+        if (parsedResponse.body && typeof parsedResponse.body === "string") {
+            parsedResponse.body = JSON.parse(parsedResponse.body); // Parsea el body interno si es un string
+        }
     } catch (error) {
-        console.error("Error al parsear la respuesta de validación:", error);
+        console.error("Error al procesar la respuesta de validación:", error);
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Error al procesar la respuesta de validación" })
         };
     }
-
     // Verificar si la respuesta contiene el código de estado esperado
     if (!parsedResponse || parsedResponse.statusCode !== 200) {
         const message = parsedResponse?.body?.message || 'Token inválido o error en la validación';
