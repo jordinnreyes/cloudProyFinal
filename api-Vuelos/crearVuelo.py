@@ -20,11 +20,8 @@ logging.basicConfig(level=logging.INFO)
 
 def lambda_handler(event, context):
     print(event)
-
-     # **Inicio de manejo del cuerpo del evento**
-    logging.info("Contenido de event.body: %s", event.get('body', ''))
-     # Bloque 1: Verificar si el cuerpo está vacío y parsearlo
-    body = event.get("body", "")
+    # Bloque 1: Verificar si el cuerpo está vacío
+    body = event.get("body", None)
     if not body:
         logging.error("El cuerpo del JSON está vacío")
         return {
@@ -32,27 +29,27 @@ def lambda_handler(event, context):
             'body': json.dumps({'message': 'El cuerpo del JSON está vacío'})
         }
 
-    # Intentamos parsear el cuerpo de la solicitud
-
-    if 'body' in event and event['body']:
-        if isinstance(event['body'], str):
-            body = json.loads(event['body'])  # Convertir de string a JSON
-        elif isinstance(event['body'], dict):
-            body = event['body']  # Ya es un diccionario
-        else:
-            raise ValueError("Invalid body format")
-    else:
-        body = {}
-            
-    try:
-        data = json.loads(body)
-        logging.info("JSON parseado correctamente: %s", data)
-    except json.JSONDecodeError as e:
-        logging.error("Error de decodificación JSON: %s", str(e))
+    # Bloque 2: Intentar parsear el cuerpo
+    if isinstance(body, str):  # Si es un string, cargarlo como JSON
+        try:
+            body = json.loads(body)
+        except json.JSONDecodeError as e:
+            logging.error("Error de decodificación JSON: %s", str(e))
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Error de decodificación JSON'})
+            }
+    elif not isinstance(body, dict):  # Validar formato
+        logging.error("Formato de cuerpo no válido: %s", type(body))
         return {
             'statusCode': 400,
-            'body': json.dumps({'message': 'Error de decodificación JSON'})
+            'body': json.dumps({'message': 'Formato del cuerpo no válido'})
         }
+
+    logging.info("JSON parseado correctamente: %s", body)
+    data = body  # Renombrar para consistencia
+
+     
 
 
     print("Headers recibidos:", event['headers'])
