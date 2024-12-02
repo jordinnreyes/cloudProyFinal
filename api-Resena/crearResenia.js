@@ -117,6 +117,8 @@ exports.handler = async (event) => {
         console.log("Contenido de validationResponse.Payload:", validationResponse.Payload);
 
         parsedResponse = JSON.parse(validationResponse.Payload); // Parsea el Payload principal
+        
+        console.log("Payload principal parseado correctamente:", parsedResponse);
 
         // Verificar si parsedResponse.body es una cadena antes de intentar parsearla
         if (typeof parsedResponse.body === 'string') {
