@@ -26,8 +26,8 @@ functions:
     handler: obtenerVuelos.lambda_handler
     events:
       - http:
-          path: /vuelosget/{tenant_id}
-          method: get
+          path: /vuelosget
+          method: post
           cors: true
           integration: lambda
 
