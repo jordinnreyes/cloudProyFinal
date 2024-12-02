@@ -15,16 +15,50 @@ exports.handler = async (event) => {
     console.log("Contenido de event.body:", event.body);
 
     // Intentamos parsear el cuerpo de la solicitud
+    // Bloque 1: Verificar si el cuerpo está vacío
     let data;
     try {
-        data = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+        const body = event.body || null;
+
+        if (!body) {
+            console.error("El cuerpo del JSON está vacío");
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'El cuerpo del JSON está vacío' })
+            };
+        }
+
+        // Intentar parsear el cuerpo si es un string
+        if (typeof body === "string") {
+            try {
+                data = JSON.parse(body);
+            } catch (e) {
+                console.error("Error de decodificación JSON:", e);
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ message: 'Error de decodificación JSON' })
+                };
+            }
+        } else if (typeof body === "object") {
+            data = body;
+        } else {
+            console.error("Formato de cuerpo no válido:", typeof body);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Formato del cuerpo no válido' })
+            };
+        }
+
+        console.log("JSON parseado correctamente:", data);
+
     } catch (error) {
-        console.error("Error al parsear event.body:", error);
+        console.error("Error al procesar el cuerpo de la solicitud:", error);
         return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Body no es un JSON válido" })
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Error interno al procesar el cuerpo' })
         };
     }
+
 
     // Inicio - Proteger el Lambda con la validación del token
     const token = event.headers.Authorization?.split(' ')[1];
