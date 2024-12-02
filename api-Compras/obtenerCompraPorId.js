@@ -101,7 +101,7 @@ exports.handler = async (event) => {
     if (!data.id_compra) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: "id_compra es requerido" })
+            body: { message: "id_compra es requerido" }
         };
     }
     
@@ -124,19 +124,19 @@ exports.handler = async (event) => {
         if (!result.Item) {
             return {
                 statusCode: 404,
-                body: JSON.stringify({ message: 'Compra no encontrada' })
+                body: { message: 'Compra no encontrada' }
             };
         }
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ compra: result.Item })
+            body: { compra: result.Item }
         };
     } catch (error) {
         console.error(error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Ocurrió un error al obtener la compra' })
+            body: { message: 'Ocurrió un error al obtener la compra' }
         };
     }
 };
