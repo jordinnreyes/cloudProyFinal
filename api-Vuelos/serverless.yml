@@ -99,3 +99,12 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
+          # Nuevo índice para destino y origen
+          - IndexName: DestinoOrigenIndex
+            KeySchema:
+              - AttributeName: destino
+                KeyType: HASH
+              - AttributeName: origen
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
