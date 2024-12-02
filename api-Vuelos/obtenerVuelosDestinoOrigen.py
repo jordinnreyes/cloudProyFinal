@@ -54,20 +54,21 @@ def lambda_handler(event, context):
             }
         )
 
-        if 'Items' not in response or not response['Items']:
+        # Recuperar los elementos
+        items = response.get('Items', [])
+        if not items:
             return {
                 'statusCode': 404,
-                'body': json.dumps({'message': f'No se encontraron vuelos para destino: {destino} y origen: {origen}'})
+                'body': json.dumps({'message': f'No se encontraron vuelos para el tenant_id {tenant_id}'})
             }
 
-        vuelos = response['Items']
-        vuelos_deserializados = [
-            {k: list(v.values())[0] for k, v in vuelo.items()} for vuelo in vuelos
-        ]
-
+        # Retornar los vuelos encontrados
         return {
             'statusCode': 200,
-            'body': json.dumps({'vuelos': vuelos_deserializados})
+            'body': json.dumps({
+                'message': 'Vuelos encontrados',
+                'vuelos': items
+            })
         }
 
     except Exception as e:
