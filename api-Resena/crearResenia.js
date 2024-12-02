@@ -107,10 +107,13 @@ exports.handler = async (event) => {
     let parsedResponse;
     try {
         parsedResponse = JSON.parse(validationResponse.Payload); // Parsea el Payload principal
-    
-        if (parsedResponse.body && typeof parsedResponse.body === "string") {
-            parsedResponse.body = JSON.parse(parsedResponse.body); // Parsea el body interno si es un string
+        
+        if (typeof parsedResponse.body === "string") {
+            parsedResponse.body = JSON.parse(parsedResponse.body); // Parsea el body si es un string
+        } else if (typeof parsedResponse.body !== "object") {
+            throw new Error("El body tiene un formato inesperado");
         }
+
     } catch (error) {
         console.error("Error al procesar la respuesta de validación:", error);
         return {
