@@ -103,10 +103,42 @@ exports.handler = async (event) => {
         };
     }
 
+    // Manejo de la respuesta de validación
     let parsedResponse;
     try {
+        if (!validationResponse.Payload) {
+            console.error("La respuesta de validación está vacía o indefinida");
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "La respuesta de validación está vacía o indefinida" })
+            };
+        }
+
+        console.log("Contenido de validationResponse.Payload:", validationResponse.Payload);
+
         parsedResponse = JSON.parse(validationResponse.Payload); // Parsea el Payload principal
-        parsedResponse.body = JSON.parse(parsedResponse.body);  // Parsea el body interno
+
+        // Verificar si parsedResponse.body es una cadena antes de intentar parsearla
+        if (typeof parsedResponse.body === 'string') {
+            try {
+                parsedResponse.body = JSON.parse(parsedResponse.body); // Parsea el body interno
+            } catch (error) {
+                console.error("Error al parsear parsedResponse.body:", error);
+                return {
+                    statusCode: 500,
+                    body: JSON.stringify({ message: "Error al procesar el cuerpo interno de la respuesta de validación" })
+                };
+            }
+        } else if (typeof parsedResponse.body !== 'object') {
+            console.error("El cuerpo de la respuesta de validación no es un formato válido:", typeof parsedResponse.body);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "El cuerpo de la respuesta de validación no es un formato válido" })
+            };
+        }
+
+        console.log("Respuesta de validación procesada correctamente:", parsedResponse);
+
     } catch (error) {
         console.error("Error al parsear la respuesta de validación:", error);
         return {
