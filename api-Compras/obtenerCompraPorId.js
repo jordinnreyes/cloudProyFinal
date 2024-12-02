@@ -41,7 +41,7 @@ exports.handler = async (event) => {
         console.log("Payload enviado al servicio de validación:", JSON.stringify({ token: token })); // Log de lo enviado
         
         validationResponse = await lambda.invoke({
-            FunctionName: 'servicio-vuelos-r-dev-validarToken', // Nombre del Lambda Python
+            FunctionName: 'servicio-vuelos-compras-dev-validarToken', // Nombre del Lambda Python
             Payload: JSON.stringify({ body: JSON.stringify({ token: token }) }), // Pasa el token en el evento
         }).promise();
         
