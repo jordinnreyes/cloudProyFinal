@@ -109,13 +109,13 @@ exports.handler = async (event) => {
             headers: { 
             'Content-Type': 'application/json' 
             },
-            body: JSON.stringify({ compras: result.Items })
+            body: { compras: result.Items }
         };
     } catch (error) {
         console.error(error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Ocurrió un error al obtener las compras' })
+            body: { message: 'Ocurrió un error al obtener las compras' }
         };
     }
 };
