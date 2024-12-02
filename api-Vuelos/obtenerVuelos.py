@@ -13,12 +13,39 @@ logging.basicConfig(level=logging.INFO)
 def lambda_handler(event, context):
     logging.info("Contenido del evento: %s", event)
 
-    # Obtener el tenant_id desde los parámetros de la URL o cuerpo del evento
-    tenant_id = event.get('pathParameters', {}).get('tenant_id', None)
-    
-    print(f"tenant_id recibido: {tenant_id}")  # Usando print
-    logging.info(f"tenant_id recibido: {tenant_id}")  # Usando logging
-    
+    # Bloque 1: Verificar si el cuerpo está vacío
+    body = event.get("body", None)
+    if not body:
+        logging.error("El cuerpo del JSON está vacío")
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'message': 'El cuerpo del JSON está vacío'})
+        }
+
+    # Bloque 2: Intentar parsear el cuerpo
+    if isinstance(body, str):  # Si es un string, cargarlo como JSON
+        try:
+            body = json.loads(body)
+        except json.JSONDecodeError as e:
+            logging.error("Error de decodificación JSON: %s", str(e))
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Error de decodificación JSON'})
+            }
+    elif not isinstance(body, dict):  # Validar formato
+        logging.error("Formato de cuerpo no válido: %s", type(body))
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'message': 'Formato del cuerpo no válido'})
+        }
+
+    logging.info("JSON parseado correctamente: %s", body)
+    data = body  # Renombrar para consistencia
+
+    # Obtener el tenant_id del cuerpo
+    tenant_id = data.get('tenant_id', None)
+    logging.info(f"tenant_id recibido: {tenant_id}")
+
     if not tenant_id:
         logging.error("El tenant_id es obligatorio")
         return {
@@ -45,9 +72,13 @@ def lambda_handler(event, context):
 
         # Retornar los vuelos encontrados
         vuelos = response['Items']
+        # Deserializar los resultados de DynamoDB para facilitar la lectura
+        vuelos_deserializados = [
+            {k: list(v.values())[0] for k, v in vuelo.items()} for vuelo in vuelos
+        ]
         return {
             'statusCode': 200,
-            'body': json.dumps({'vuelos': vuelos})
+            'body': json.dumps({'vuelos': vuelos_deserializados})
         }
 
     except Exception as e:
