@@ -16,6 +16,7 @@ exports.handler = async (event) => {
 
     // Intentamos parsear el cuerpo de la solicitud
     // Bloque 1: Verificar si el cuerpo está vacío
+    // Bloque 1: Verificar si el cuerpo está vacío
     let data;
     try {
         const body = event.body || null;
@@ -30,6 +31,13 @@ exports.handler = async (event) => {
 
         // Verificar si body es una cadena antes de intentar parsearla
         if (typeof body === "string") {
+            if (body.trim() === "") {
+                console.error("El cuerpo del JSON está vacío después de recortar espacios");
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ message: 'El cuerpo del JSON está vacío después de recortar espacios' })
+                };
+            }
             try {
                 data = JSON.parse(body);
             } catch (e) {
