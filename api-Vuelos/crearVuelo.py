@@ -35,14 +35,14 @@ def lambda_handler(event, context):
     # Intentamos parsear el cuerpo de la solicitud
 
     if 'body' in event and event['body']:
-            if isinstance(event['body'], str):
-                body = json.loads(event['body'])  # Convertir de string a JSON
-            elif isinstance(event['body'], dict):
-                body = event['body']  # Ya es un diccionario
-            else:
-                raise ValueError("Invalid body format")
+        if isinstance(event['body'], str):
+            body = json.loads(event['body'])  # Convertir de string a JSON
+        elif isinstance(event['body'], dict):
+            body = event['body']  # Ya es un diccionario
         else:
-            body = {}
+            raise ValueError("Invalid body format")
+    else:
+        body = {}
             
     try:
         data = json.loads(body)
