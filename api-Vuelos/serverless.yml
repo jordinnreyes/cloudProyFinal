@@ -31,6 +31,15 @@ functions:
           cors: true
           integration: lambda
 
+  obtenerVuelosDs:
+    handler: obtenerVuelosDestinoOrigen.lambda_handler
+    events:
+      - http:
+          path: /vuelosDestOrg
+          method: post
+          cors: true
+          integration: lambda
+
   modificarVuelo:
     handler: modificarVuelo.lambda_handler
     events:
