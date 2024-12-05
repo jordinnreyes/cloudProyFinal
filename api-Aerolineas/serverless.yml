@@ -8,6 +8,7 @@ provider:
   environment:
     AEROLINEAS_TABLE: ${self:service}-${self:provider.stage}-aerolineas
     TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
+    STAGE: ${self:provider.stage}
   iam:
     role: arn:aws:iam::078729045663:role/LabRole
 
