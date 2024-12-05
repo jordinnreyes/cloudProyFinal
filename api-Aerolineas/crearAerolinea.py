@@ -27,7 +27,7 @@ def lambda_handler(event, context):
     data = event.get('body', '{}')  # Esto maneja el caso donde no haya un cuerpo válido
     
     # Si el body no es un diccionario, conviértelo de JSON string a dict
-    if isinstance(body, str):
+    if isinstance(data, str):
         data = json.loads(data)
     if not data:
         logging.error("El cuerpo del JSON está vacío")
