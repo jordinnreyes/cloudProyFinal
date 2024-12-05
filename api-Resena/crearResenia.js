@@ -13,9 +13,11 @@ if (!REVIEWS_TABLE) {
 exports.handler = async (event) => {
 
     console.log("Contenido de event.body:", event.body);
+    const stage = process.env.STAGE; // Valor por defecto: 'dev'
+    // Construir el nombre de la función Lambda de validación
+    const functionName = `servicio-vuelos-aero-${stage}-validarToken`;
 
     // Intentamos parsear el cuerpo de la solicitud
-    // Bloque 1: Verificar si el cuerpo está vacío
     // Bloque 1: Verificar si el cuerpo está vacío
     let data;
     try {
@@ -90,7 +92,7 @@ exports.handler = async (event) => {
         console.log("Payload enviado al servicio de validación:", JSON.stringify({ token: token })); // Log de lo enviado
         
         validationResponse = await lambda.invoke({
-            FunctionName: 'servicio-vuelos-r-dev-validarToken', // Nombre del Lambda Python
+            FunctionName: functionName, // Nombre del Lambda Python
             Payload: JSON.stringify({ body: JSON.stringify({ token: token }) }), // Pasa el token en el evento
         }).promise();
         
