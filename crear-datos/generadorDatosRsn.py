@@ -16,12 +16,12 @@ dynamodb = boto3.resource(
     aws_session_token='IQoJb3JpZ2luX2VjEFMaCXVzLXdlc3QtMiJGMEQCICtHH5g/Y3WX6+2ZRjjHjPqOMPUESuLf/P1YFPihqMOQAiAQGxkcPomrUgssAZPlJzdeEmirToG4CnPeA2ixeC5bZSrAAgj8//////////8BEAMaDDA3ODcyOTA0NTY2MyIMzXGXf5rmy/hvHHSbKpQCUp904O2Vp6xahKvAP298O7KfgIak1l+ZBPnn+MCJ4B+GRIF4ztWznxsjbuoNfonUyjZ0XtojJ8j4xjizAOWvYCTaqYVErZ6aEuPZUxC4ajd+NKoj113m3NjfELndMQKHRyjkGv5dJXr3GVt8CnWG4RHnGZsBbaaFhc6iw4mQ8u5uLDAbAv5Ho/wPa5wWYII4id4BfFP3rzto4eI2vanjrJGOD9Yv8DIsq8B7GRGDPr8btp7Y9YcsBiMabBzLgYpnO93ESArYOCYX1NzYWsWYEP5GGqSXlcttomk6QiFJ+ARQNYcKa8CClSwoZlsw8ohk6d1+fLhwL+qZGdgEshgnq9BFGxtGkWeO51xESilHrvxCU98lMJe2xLoGOp4Bwb6jGkGNM4SiHSimA4nexdarccTtMnoHhPHpKxq5Wtlb6bm67QQnORGpsYRKyDPnSdKUV5OaVVC9XyzP0k53LCDCeB8ygj3/j37dv9slrCHWtG8K+pMfIpMsVS7oy/Jv6BiPExVapjyfqEjZRNk/KXhlTWVVEuP4muXh3hLMC6b1Lw23r1RpibiGkra5todVHJ+Gg+ieqmixVyk0xmM='
 )
 
-table_name_resenas = "servicio-vuelos-r-prod-resenas"  
-table_name_aerolineas = "servicio-vuelos-aero-prod-aerolineas"
-table_name_vuelos = "servicio-vuelos-v-prod-vuelos"
-table_name_usuarios = "servicio-vuelos-prod-usuario"
-compras_table = "servicio-vuelos-compras-prod-compras"
-table_name_destinos = "servicio-vuelos-destino-prod-destinos"
+table_name_resenas = "servicio-vuelos-r-test-resenas"  
+table_name_aerolineas = "servicio-vuelos-aero-test-aerolineas"
+table_name_vuelos = "servicio-vuelos-v-test-vuelos"
+table_name_usuarios = "servicio-vuelos-test-usuario"
+compras_table = "servicio-vuelos-compras-test-compras"
+table_name_destinos = "servicio-vuelos-destino-test-destinos"
 
 
 #----------------------------GENERAR AEROLINEAS------------------------------------------
