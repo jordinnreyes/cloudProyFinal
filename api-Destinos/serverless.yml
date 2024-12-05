@@ -4,10 +4,10 @@ provider:
   name: aws
   runtime: nodejs16.x
   region: us-east-1
-  stage: ${opt:stage, 'dev'}
   environment:
     DESTINOS_TABLE: ${self:service}-${self:provider.stage}-destinos
     TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
+    stage: ${opt:stage, 'dev'}
   iam:
     role: arn:aws:iam::078729045663:role/LabRole
 
