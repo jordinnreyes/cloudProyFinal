@@ -17,6 +17,10 @@ logging.basicConfig(level=logging.INFO)
 def lambda_handler(event, context):
     print(event)
 
+    stage = os.environ.get('STAGE', 'dev')  # Valor por defecto: 'dev'
+    # Construir el nombre de la función Lambda de validación
+    function_name = f"servicio-vuelos-aero-{stage}-validarToken"
+
      # **Inicio de manejo del cuerpo del evento**
     logging.info("Contenido de event.body: %s", event.get('body', ''))
      # Bloque 1: Verificar si el cuerpo está vacío y parsearlo
@@ -68,7 +72,8 @@ def lambda_handler(event, context):
         print("Payload enviado al servicio de validación: :", json.dumps({'token': token}))
         
         validation_response = lambda_client.invoke(
-            FunctionName='servicio-vuelos-aero-dev-validarToken',  # Nombre del Lambda Python
+            #FunctionName='servicio-vuelos-aero-dev-validarToken',
+            FunctionName=function_name# Nombre del Lambda Python
             Payload=json.dumps({'body': json.dumps({'token': token})})# Pasamos el token en el evento
         )
 
