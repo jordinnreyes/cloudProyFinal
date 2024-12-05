@@ -10,6 +10,9 @@ const DESTINOS_TABLE = process.env.DESTINOS_TABLE;
 exports.handler = async (event) => {
     console.log("Contenido de event.body:", event.body);
 
+    const stage = process.env.stage || 'dev'; // Valor por defecto: 'dev'
+    // Construir el nombre de la función Lambda de validación
+    const functionName = `servicio-vuelos-aero-${stage}-validarToken`;
     // Intentamos parsear el cuerpo de la solicitud
 
     let data;
@@ -70,6 +73,7 @@ exports.handler = async (event) => {
         
         validationResponse = await lambda.invoke({
             FunctionName: 'servicio-vuelos-destino-dev-validarToken', // Nombre del Lambda Python
+            FunctionName: functionName,
             Payload: JSON.stringify({ body: JSON.stringify({ token: token }) }), // Pasa el token en el evento
         }).promise();
         
