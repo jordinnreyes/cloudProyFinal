@@ -11,17 +11,17 @@ import os
 dynamodb = boto3.resource(
     'dynamodb',
     region_name='us-east-1',
-    aws_access_key_id='ASIAREVE542P5UMBBDF7',
-    aws_secret_access_key='ExwHOMhih9gX8mWG5uffTg6I3vSNZXCmgyof9WEN',
-    aws_session_token='IQoJb3JpZ2luX2VjENT//////////wEaCXVzLXdlc3QtMiJIMEYCIQD8oe7hQFLIdyvK3+JBd6+GxIf+d7UMzbGFcGVALTcSUgIhAPBcB0OCWfXkOl7+MviBSKD4XLIZGaUD3ECxfjxcBhOZKrcCCH0QAxoMMDc4NzI5MDQ1NjYzIgyVM+i6VBXODkN2W2wqlAIzWECRskbK6Y3/34DaAEyUCGqEz7v30DbxG5P2uKjHYhmL+GQWDndVJbFnFRAgs6tubdWPkJB8Mq1mtBkSsnvdrhlOqzTuFNZi/Eu3wkSt3fVQUZybNCJP33yRSrqYzvbtalmYSYtU3RVAF/vD5tzXtb2eA5vHB0brWmO5Kt+HeCRouA+wLC+Vl1kARciQx7mnQnrpsMq5ALa07dP1p1tWIT5pMwCJJjfU7wRw+ILc95dsX4m6L2q65KGE4p+MoB3XhHgGqT0dER0aN8ABsi103jsO5VvHaTZt/sxS2RoHa1F9XIC/cjaqzqBx1tAqNlkQ8kozvfjV9M4UZLhG8Lt4wP1rsPBF/7K9mZa3n4r+oiqSnC0wl6+ougY6nAELpRaxdYtFZJUG54/XVZPSPFnoB+ftpRDzmKPecPBM6X6RMXi8YKirMKuhQyT2KA3j95nS1DQU9Y52uQ81zOok/3c5mznd65bVXFW3lUnIBKf1WOGvB4aohGhsBdpVBTKjoLcbAoFD3AmOhQqg11PtNw9hEP9+qKDgXeQL+6oMg5ogW8LRN7aBQU1b4HsZnrSGXY98hLUZlmTrAOg='
+    aws_access_key_id='ASIAREVE542PTI5BBBRE',
+    aws_secret_access_key='xbxXWjZGMUzlrCRD885GZOIEp5zY+PD00sycoTH1',
+    aws_session_token='IQoJb3JpZ2luX2VjEFMaCXVzLXdlc3QtMiJGMEQCICtHH5g/Y3WX6+2ZRjjHjPqOMPUESuLf/P1YFPihqMOQAiAQGxkcPomrUgssAZPlJzdeEmirToG4CnPeA2ixeC5bZSrAAgj8//////////8BEAMaDDA3ODcyOTA0NTY2MyIMzXGXf5rmy/hvHHSbKpQCUp904O2Vp6xahKvAP298O7KfgIak1l+ZBPnn+MCJ4B+GRIF4ztWznxsjbuoNfonUyjZ0XtojJ8j4xjizAOWvYCTaqYVErZ6aEuPZUxC4ajd+NKoj113m3NjfELndMQKHRyjkGv5dJXr3GVt8CnWG4RHnGZsBbaaFhc6iw4mQ8u5uLDAbAv5Ho/wPa5wWYII4id4BfFP3rzto4eI2vanjrJGOD9Yv8DIsq8B7GRGDPr8btp7Y9YcsBiMabBzLgYpnO93ESArYOCYX1NzYWsWYEP5GGqSXlcttomk6QiFJ+ARQNYcKa8CClSwoZlsw8ohk6d1+fLhwL+qZGdgEshgnq9BFGxtGkWeO51xESilHrvxCU98lMJe2xLoGOp4Bwb6jGkGNM4SiHSimA4nexdarccTtMnoHhPHpKxq5Wtlb6bm67QQnORGpsYRKyDPnSdKUV5OaVVC9XyzP0k53LCDCeB8ygj3/j37dv9slrCHWtG8K+pMfIpMsVS7oy/Jv6BiPExVapjyfqEjZRNk/KXhlTWVVEuP4muXh3hLMC6b1Lw23r1RpibiGkra5todVHJ+Gg+ieqmixVyk0xmM='
 )
 
-table_name_resenas = "servicio-vuelos-r-dev-resenas"  
-table_name_aerolineas = "servicio-vuelos-aero-dev-aerolineas"
-table_name_vuelos = "servicio-vuelos-v-dev-vuelos"
-table_name_usuarios = "servicio-vuelos-dev-usuario"
-compras_table = "servicio-vuelos-compras-dev-compras"
-table_name_destinos = "servicio-vuelos-destino-dev-destinos"
+table_name_resenas = "servicio-vuelos-r-prod-resenas"  
+table_name_aerolineas = "servicio-vuelos-aero-prod-aerolineas"
+table_name_vuelos = "servicio-vuelos-v-prod-vuelos"
+table_name_usuarios = "servicio-vuelos-prod-usuario"
+compras_table = "servicio-vuelos-compras-prod-compras"
+table_name_destinos = "servicio-vuelos-destino-prod-destinos"
 
 
 #----------------------------GENERAR AEROLINEAS------------------------------------------
@@ -269,7 +269,7 @@ def crear_resenas(usuarios, vuelos):
 
 
 # Función para generar destinos ficticios
-def generar_destinos(cantidad=5000):
+def generar_destinos(cantidad=10000):
     
     destinos_table = dynamodb.Table(table_name_destinos)
     """
@@ -335,9 +335,9 @@ if __name__ == "__main__":
                 print("\nGenerando compras ficticias...")
                 generar_compras(cantidad=10000, usuarios=usuarios, vuelos=vuelos)  # Pasa los vuelos generados
 
-        # Comentado la generación de destinos, ya que ya se crearon muchos
-        #print("\nGenerando destinos ficticios...")
-        #generar_destinos(cantidad=10000)
+        #Comentado la generación de destinos, ya que ya se crearon muchos
+        print("\nGenerando destinos ficticios...")
+        generar_destinos(cantidad=10000)
     
     except Exception as e:
         print(f"Error durante la ejecución: {e}")
