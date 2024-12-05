@@ -10,7 +10,7 @@ const DESTINOS_TABLE = process.env.DESTINOS_TABLE;
 exports.handler = async (event) => {
     console.log("Contenido de event.body:", event.body);
 
-    const stage = process.env.stage; // Valor por defecto: 'dev'
+    const stage = process.env.STAGE; // Valor por defecto: 'dev'
     // Construir el nombre de la función Lambda de validación
     const functionName = `servicio-vuelos-aero-${stage}-validarToken`;
     // Intentamos parsear el cuerpo de la solicitud
