@@ -47,12 +47,17 @@ def lambda_handler(event, context):
             # Retornar un código de estado HTTP 200 (OK) y un mensaje de éxito
             return {
                 'statusCode': 200,
-                'body': '{"message": "User registered successfully", "user_id": "{user_id}"}}'
+                'body': json.dumps({
+                    "message": "User registered successfully",
+                    "user_id": user_id
+                })
             }
         else:
             return {
                 'statusCode': 400,
-                'body': '{"message": "Invalid request body: missing user_id or password"}'
+                'body': json.dumps({
+                    "message": "Invalid request body: missing user_id or password"
+                })
             }
 
     except Exception as e:
@@ -60,5 +65,7 @@ def lambda_handler(event, context):
         print("Exception:", str(e))         
         return {
             'statusCode': 500,
-            'body': '{"message": "Error ocurrido"}'
+            'body': json.dumps({
+                    "message": "Error ocurrido"
+                })
         }
