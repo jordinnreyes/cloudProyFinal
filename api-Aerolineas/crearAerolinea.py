@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 def lambda_handler(event, context):
     print(event)
 
-    stage = os.environ.get('STAGE', 'dev')  # Valor por defecto: 'dev'
+    stage = os.environ.get('stage', 'dev')  # Valor por defecto: 'dev'
     # Construir el nombre de la función Lambda de validación
     function_name = f"servicio-vuelos-aero-{stage}-validarToken"
 
