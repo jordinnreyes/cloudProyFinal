@@ -9,6 +9,7 @@ provider:
     VUELOS_TABLE: ${self:service}-${self:provider.stage}-vuelos
     TOKENS_TABLE: servicio-vuelos-${self:provider.stage}-tokens  # Aquí defines la variable para la tabla tokens
     AEROLINEAS_TABLE: servicio-vuelos-aero-${self:provider.stage}-aerolineas
+    STAGE: ${self:provider.stage}
   iam:
     role: arn:aws:iam::078729045663:role/LabRole
 
