@@ -24,17 +24,19 @@ def lambda_handler(event, context):
      # **Inicio de manejo del cuerpo del evento**
     logging.info("Contenido de event.body: %s", event.get('body', ''))
      # Bloque 1: Verificar si el cuerpo está vacío y parsearlo
-    body = event.get("body", "")
-    if not body:
+    data = event.get('body', '{}')  # Esto maneja el caso donde no haya un cuerpo válido
+    
+    # Si el body no es un diccionario, conviértelo de JSON string a dict
+    if isinstance(body, str):
+        data = json.loads(data)
+    if not data:
         logging.error("El cuerpo del JSON está vacío")
         return {
             'statusCode': 400,
             'body': json.dumps({'message': 'El cuerpo del JSON está vacío'})
         }
 
-    # Intentamos parsear el cuerpo de la solicitud
     try:
-        data = json.loads(body)
         logging.info("JSON parseado correctamente: %s", data)
     except json.JSONDecodeError as e:
         logging.error("Error de decodificación JSON: %s", str(e))
