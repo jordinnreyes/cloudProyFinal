@@ -162,7 +162,7 @@ def generar_compras(cantidad=10000, usuarios=[], vuelos=[]):
         try:
             # Crear datos aleatorios para la compra
             user_id = random.choice(usuarios)
-            id_vuelo = random.choice(vuelos)
+            id_vuelo = random.choice(vuelos)['id_vuelo'] 
             fecha_compra = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             cantidad_boletos = random.randint(1, 5)  # Entre 1 y 5 boletos por compra
             precio_total = str(random.randint(50, 700))  # Precio por boleto entre $50 y $500
